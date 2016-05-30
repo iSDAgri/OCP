@@ -13,11 +13,11 @@ setwd("./M3_data")
 # Download AfSIS reference data
 download("https://www.dropbox.com/s/4cfu3crtbcslleq/AfSIS_M3_top.csv.zip?dl=0", "AfSIS_M3_top.csv.zip", mode="wb")
 unzip("AfSIS_M3_top.csv.zip", overwrite=T)
-ref <- read.table("AfSIS_M3_top.csv", header=T, sep=",") ## AfSIS-M3 topsoil reference data
+ref <- read.table("AfSIS_M3_top.csv", header=T, sep=",") ## AfSIS-M3 topsoil reference data in mg/kg
 
 # Copy M3 sample data into ./M3_data ... working directory
 unzip("Sample_M3.csv.zip", overwrite=T)
-samp <- read.table("Sample_M3.csv", header=T, sep=",") ## topsoil sample M3 data
+samp <- read.table("Sample_M3.csv", header=T, sep=",") ## topsoil sample M3 data in mg/kg
 
 # Compositional data setup
 dat <- rbind(ref, samp)
