@@ -16,7 +16,7 @@ unzip("AfSIS_M3_top.csv.zip", overwrite=T)
 ref <- read.table("AfSIS_M3_top.csv", header=T, sep=",") ## AfSIS-M3 topsoil reference data
 
 # Copy M3 sample data into ./M3_data ... working directory
-unzip("Sample_M3.csv.zip", overwrite=T) ## note the relevant sample .zip file needs to be copied into your working directory
+unzip("Sample_M3.csv.zip", overwrite=T)
 samp <- read.table("Sample_M3.csv", header=T, sep=",") ## topsoil sample M3 data
 
 # Compositional data setup
