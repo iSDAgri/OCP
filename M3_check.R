@@ -34,3 +34,5 @@ cdat <- cbind(dat[1:2], clrt) ## generates compositional data frame seperated by
 # GLM test ----------------------------------------------------------------
 test <- glm(RS ~ B+Mg+P+S+K+Ca+Mn+Fe+Cu+Zn, family=binomial(link="logit"), cdat)
 summary(test)
+cdat$OR <- predict(test, type="link", cdat) ## log odds ratio of the difference between reference and sample populations
+boxplot(OR~RS, notch=T, cdat)
