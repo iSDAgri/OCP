@@ -31,8 +31,11 @@ cdat <- acomp(qdat[cvar])
 clrt <- as.data.frame(clr(cdat)) ## clr transform
 cdat <- cbind(dat[1:2], clrt) ## generates compositional data frame seperated by reference (RS) values
 
-# GLM test ----------------------------------------------------------------
-test <- glm(RS ~ B+Mg+P+S+K+Ca+Mn+Fe+Cu+Zn, family=binomial(link="logit"), cdat)
-summary(test)
+# GLM tests ---------------------------------------------------------------
+ftest <- glm(RS ~ Fv, family=binomial(link="logit"), cdat) # differences in fill values (Fv)
+summary(ftest)
+
+ctest <- glm(RS ~ B+Mg+P+S+K+Ca+Mn+Fe+Cu+Zn, family=binomial(link="logit"), cdat)
+summary(ctest)
 cdat$OR <- predict(test, type="link", cdat) ## log odds ratio of the difference between reference and sample measurements
 boxplot(OR~RS, notch=T, cdat)
