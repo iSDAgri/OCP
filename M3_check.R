@@ -32,8 +32,9 @@ clrt <- as.data.frame(clr(cdat)) ## clr transform
 cdat <- cbind(dat[1:2], clrt) ## generates compositional data frame seperated by reference (RS) values
 
 # GLM tests ---------------------------------------------------------------
-ftest <- glm(RS ~ Fv, family=binomial(link="logit"), cdat) # differences in fill values (Fv)
+ftest <- glm(RS ~ Fv, family=binomial(link="logit"), cdat) ## differences in fill values (Fv)
 summary(ftest)
+boxplot(Fv~RS, notch=T, cdat)
 
 ctest <- glm(RS ~ B+Mg+P+S+K+Ca+Mn+Fe+Cu+Zn, family=binomial(link="logit"), cdat)
 summary(ctest)
