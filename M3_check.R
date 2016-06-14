@@ -34,9 +34,12 @@ cdat <- cbind(dat[1:2], clrt) ## generates compositional data frame seperated by
 # GLM tests ---------------------------------------------------------------
 ftest <- glm(RS ~ Fv, family=binomial(link="logit"), cdat) ## differences in fill values (Fv)
 summary(ftest)
-boxplot(Fv~RS, notch=T, cdat)
 
 ctest <- glm(RS ~ B+Mg+P+S+K+Ca+Mn+Fe+Cu+Zn, family=binomial(link="logit"), cdat)
 summary(ctest)
 cdat$OR <- predict(test, type="link", cdat) ## log odds ratio of the difference between reference and sample measurements
-boxplot(OR~RS, notch=T, cdat)
+
+# Plots
+par(mfrow=c(1,2))
+boxplot(Fv~RS, notch=T, ylab="clr[Fv]", cdat)
+boxplot(OR~RS, notch=T, ylab="log(Odds)", cdat)
