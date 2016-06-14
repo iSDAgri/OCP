@@ -34,15 +34,15 @@ cdat <- cbind(dat[1:2], clrt) ## generates compositional data frame seperated by
 # GLM tests ---------------------------------------------------------------
 ftest <- glm(RS ~ Fv, family=binomial(link="logit"), cdat) ## differences in fill values (Fv)
 summary(ftest)
+cdat$fOR <- predict(ftest, type="link", cdat) ## log odds ratio of the difference between reference and sample measurements
 
 ctest <- glm(RS ~ B+Mg+P+S+K+Ca+Mn+Fe+Cu+Zn, family=binomial(link="logit"), cdat)
 summary(ctest)
-cdat$OR <- predict(test, type="link", cdat) ## log odds ratio of the difference between reference and sample measurements
+cdat$cOR <- predict(ctest, type="link", cdat) ## log odds ratio of the difference between reference and sample measurements
 
-# Plots
+# Diagnostic plots
 par(mfrow=c(1,2))
-boxplot(Fv~RS, notch=T, ylab="Fill value index", cdat)
-boxplot(OR~RS, notch=T, ylab="Compositional index", cdat)
-
+boxplot(fOR~RS, notch=T, ylab="Fill value index", cdat)
+boxplot(cOR~RS, notch=T, ylab="Compositional index", cdat)
 par(mfrow=c(1,1))
-plot(OR~Fv, col=ifelse(RS=="R", 4, 2), cex=0.6, xlab="Fill value index", ylab="Compositional index", cdat)
+plot(cOR~fOR, col=ifelse(RS=="R", 4, 2), cex=0.6, xlab="Fill value index", ylab="Compositional index", cdat)
