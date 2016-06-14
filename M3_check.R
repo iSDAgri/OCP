@@ -41,5 +41,6 @@ cdat$OR <- predict(test, type="link", cdat) ## log odds ratio of the difference 
 
 # Plots
 par(mfrow=c(1,2))
-boxplot(Fv~RS, notch=T, ylab="clr[Fv]", cdat)
-boxplot(OR~RS, notch=T, ylab="log(Odds)", cdat)
+boxplot(Fv~RS, notch=T, ylab="Fill value index", cdat)
+boxplot(OR~RS, notch=T, ylab="Compositional index", cdat)
+
