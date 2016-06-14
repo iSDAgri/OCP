@@ -44,3 +44,5 @@ par(mfrow=c(1,2))
 boxplot(Fv~RS, notch=T, ylab="Fill value index", cdat)
 boxplot(OR~RS, notch=T, ylab="Compositional index", cdat)
 
+par(mfrow=c(1,1))
+plot(OR~Fv, col=ifelse(RS=="R", 4, 2), cex=0.6, xlab="Fill value index", ylab="Compositional index", cdat)
