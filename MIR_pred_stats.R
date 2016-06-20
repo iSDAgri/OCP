@@ -24,8 +24,8 @@ Fe <- read.table("Fe_pred.csv", header=T, sep=",")
 Cu <- read.table("Cu_pred.csv", header=T, sep=",")
 Zn <- read.table("Zn_pred.csv", header=T, sep=",")
 
-# Sample ID's
-iita <- read.table("IITA_SSID.csv", header=T, sep=",")
+# Sample ID codebook
+iita <- read.table("IITA_codebook.csv", header=T, sep=",")
 ssid <- read.table("OCP_SSID.csv", header=T, sep=",")
 ssid <- merge(ssid, iita, by="ssid")
 
