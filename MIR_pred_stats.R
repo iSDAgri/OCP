@@ -38,6 +38,10 @@ ref <- ref[which(ref$Depth==10), ] ## select topsoils
 ref <- na.omit(ref) ## omit any missing values
 
 # Topsoil prediction data setup -------------------------------------------
+top_C <- merge(ssid, C, by="SSN")
+top_C <- top_C[which(top_C$depth=="top"), ]
+top_C <- top_C[!duplicated(top_C[,2]), ]
+
 # Topsoil Nitrogen predictions
 top_N <- merge(ssid, N, by="SSN")
 top_N <- top_N[which(top_N$depth=="top"), ]
@@ -118,6 +122,12 @@ plot(ecdf(top_Zn$p95), add=T, verticals=T, lty=1, lwd=2, col="dark grey", do.poi
 par(mfrow=c(1,1))
 
 # MIR prediction data reshape ---------------------------------------------
+# Topsoil Organic Carbon predictions
+names(top_C)[58:60] <- c("p.5", "p.50", "p.95")
+top_C <- reshape(top_C, direction="long", varying=58:60, idvar="ssid", v.names="C", timevar="plevel") ## long format
+top_C$lo <- ifelse(top_C$C < quantile(ref$C/10000, probs=plo), 1, 0) ## identifies low levels
+top_C$hi <- ifelse(top_C$C > quantile(ref$C/10000, probs=phi), 1, 0) ## identifies high levels
+
 # Topsoil Nitrogen predictions
 names(top_N)[58:60] <- c("p.5", "p.50", "p.95")
 top_N <- reshape(top_N, direction="long", varying=58:60, idvar="ssid", v.names="N", timevar="plevel") ## long format
@@ -153,3 +163,46 @@ names(top_Zn)[58:60] <- c("p.5", "p.50", "p.95")
 top_Zn <- reshape(top_Zn, direction="long", varying=58:60, idvar="ssid", v.names="Zn", timevar="plevel") ## long format
 top_Zn$lo <- ifelse(top_Zn$Zn < quantile(ref$Zn, probs=plo), 1, 0) ## identifies low levels
 top_Zn$hi <- ifelse(top_Zn$Zn > quantile(ref$Zn, probs=phi), 1, 0) ## identifies high levels
+
+# Hi/Lo summaries ---------------------------------------------------------
+# Topsoil C
+C_lo <- table(top_C$plevel, top_C$lo)
+prop.table(C_lo,1)*100
+C_hi <- table(top_C$plevel, top_C$hi)
+prop.table(C_hi,1)*100
+
+# Topsoil Nitrogen
+N_lo <- table(top_N$plevel, top_N$lo)
+prop.table(N_lo,1)*100
+N_hi <- table(top_N$plevel, top_N$hi)
+prop.table(N_hi,1)*100
+
+# Topsoil Phosphorus
+P_lo <- table(top_P$plevel, top_P$lo)
+prop.table(P_lo,1)*100
+P_hi <- table(top_P$plevel, top_P$hi)
+prop.table(P_hi,1)*100
+
+# Topsoil Potassium
+K_lo <- table(top_K$plevel, top_K$lo)
+prop.table(K_lo,1)*100
+K_hi <- table(top_K$plevel, top_K$hi)
+prop.table(K_hi,1)*100
+
+# Topsoil Sulfur
+S_lo <- table(top_S$plevel, top_S$lo)
+prop.table(S_lo,1)*100
+S_hi <- table(top_S$plevel, top_S$hi)
+prop.table(S_hi,1)*100
+
+# Topsoil Boron
+B_lo <- table(top_B$plevel, top_B$lo)
+prop.table(B_lo,1)*100
+B_hi <- table(top_B$plevel, top_B$hi)
+prop.table(B_hi,1)*100
+
+# Topsoil Zinc
+Zn_lo <- table(top_Zn$plevel, top_Zn$lo)
+prop.table(Zn_lo,1)*100
+Zn_hi <- table(top_Zn$plevel, top_Zn$hi)
+prop.table(Zn_hi,1)*100
