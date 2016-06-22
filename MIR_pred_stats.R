@@ -132,24 +132,24 @@ top_P$hi <- ifelse(top_P$P > quantile(ref$P, probs=phi), 1, 0) ## identifies hig
 
 # Topsoil Potassium predictions
 names(top_K)[58:60] <- c("p.5", "p.50", "p.95")
-top_K <- reshape(top_K, direction="long", varying=58:60, idvar="ssid", v.names="P", timevar="plevel") ## long format
+top_K <- reshape(top_K, direction="long", varying=58:60, idvar="ssid", v.names="K", timevar="plevel") ## long format
 top_K$lo <- ifelse(top_K$K < quantile(ref$K, probs=plo), 1, 0) ## identifies low levels
 top_K$hi <- ifelse(top_K$K > quantile(ref$K, probs=phi), 1, 0) ## identifies high levels
 
 # Topsoil Sulfur predictions
 names(top_S)[58:60] <- c("p.5", "p.50", "p.95")
-top_S <- reshape(top_S, direction="long", varying=58:60, idvar="ssid", v.names="P", timevar="plevel") ## long format
+top_S <- reshape(top_S, direction="long", varying=58:60, idvar="ssid", v.names="S", timevar="plevel") ## long format
 top_S$lo <- ifelse(top_S$S < quantile(ref$S, probs=plo), 1, 0) ## identifies low levels
 top_S$hi <- ifelse(top_S$S > quantile(ref$S, probs=phi), 1, 0) ## identifies high levels
 
 # Topsoil Boron predictions
 names(top_B)[58:60] <- c("p.5", "p.50", "p.95")
-top_B <- reshape(top_B, direction="long", varying=58:60, idvar="ssid", v.names="P", timevar="plevel") ## long format
+top_B <- reshape(top_B, direction="long", varying=58:60, idvar="ssid", v.names="B", timevar="plevel") ## long format
 top_B$lo <- ifelse(top_B$B < quantile(ref$B, probs=plo), 1, 0) ## identifies low levels
 top_B$hi <- ifelse(top_B$B > quantile(ref$B, probs=phi), 1, 0) ## identifies high levels
 
 # Topsoil Zinc predictions
 names(top_Zn)[58:60] <- c("p.5", "p.50", "p.95")
-top_Zn <- reshape(top_Zn, direction="long", varying=58:60, idvar="ssid", v.names="P", timevar="plevel") ## long format
+top_Zn <- reshape(top_Zn, direction="long", varying=58:60, idvar="ssid", v.names="Zn", timevar="plevel") ## long format
 top_Zn$lo <- ifelse(top_Zn$Zn < quantile(ref$Zn, probs=plo), 1, 0) ## identifies low levels
 top_Zn$hi <- ifelse(top_Zn$Zn > quantile(ref$Zn, probs=phi), 1, 0) ## identifies high levels
