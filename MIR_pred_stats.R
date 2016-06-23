@@ -24,6 +24,11 @@ Mn <- read.table("Mn_pred.csv", header=T, sep=",")
 Fe <- read.table("Fe_pred.csv", header=T, sep=",")
 Cu <- read.table("Cu_pred.csv", header=T, sep=",")
 Zn <- read.table("Zn_pred.csv", header=T, sep=",")
+Al <- read.table("Al_pred.csv", header=T, sep=",")
+Na <- read.table("Na_pred.csv", header=T, sep=",")
+pH <- read.table("pH_pred.csv", header=T, sep=",")
+EC <- read.table("EC_pred.csv", header=T, sep=",")
+Hp <- read.table("Hp_pred.csv", header=T, sep=",")
 
 # Sample ID codebook
 iita <- read.table("IITA_codebook.csv", header=T, sep=",")
@@ -31,7 +36,7 @@ ssid <- read.table("OCP_SSID.csv", header=T, sep=",")
 ssid <- merge(ssid, iita, by="ssid")
 
 # AfSIS reference data
-download("https://www.dropbox.com/s/srhas5aa6b76kb3/AfSIS_ref_data.csv.zip?dl=0", "AfSIS_ref_data.csv.zip", mode="wb")
+download("https://www.dropbox.com/s/7igjky8m1brphdp/AfSIS_ref_data.csv.zip?dl=0", "AfSIS_ref_data.csv.zip", mode="wb")
 unzip("AfSIS_ref_data.csv.zip", overwrite=T)
 ref <- read.table("AfSIS_ref_data.csv", header=T, sep=",")
 ref <- ref[which(ref$Depth==10), ] ## select topsoils
@@ -71,6 +76,31 @@ top_B <- top_B[!duplicated(top_B[,2]), ]
 top_Zn <- merge(ssid, Zn, by="SSN")
 top_Zn <- top_Zn[which(top_Zn$depth=="top"), ]
 top_Zn <- top_Zn[!duplicated(top_Zn[,2]), ]
+
+# Topsoil Calcium predictions
+top_Ca <- merge(ssid, Ca, by="SSN")
+top_Ca <- top_Ca[which(top_Ca$depth=="top"), ]
+top_Ca <- top_Ca[!duplicated(top_Ca[,2]), ]
+
+# Topsoil Magnesium predictions
+top_Mg <- merge(ssid, Mg, by="SSN")
+top_Mg <- top_Mg[which(top_Mg$depth=="top"), ]
+top_Mg <- top_Mg[!duplicated(top_Mg[,2]), ]
+
+# Topsoil pH predictions
+top_pH <- merge(ssid, pH, by="SSN")
+top_pH <- top_pH[which(top_pH$depth=="top"), ]
+top_pH <- top_pH[!duplicated(top_pH[,2]), ]
+
+# Topsoil electrical conductivity (EC) predictions
+top_EC <- merge(ssid, EC, by="SSN")
+top_EC <- top_EC[which(top_EC$depth=="top"), ]
+top_EC <- top_EC[!duplicated(top_EC[,2]), ]
+
+# Topsoil exchangeable acidity (Hp) predictions
+top_Hp <- merge(ssid, Hp, by="SSN")
+top_Hp <- top_Hp[which(top_Hp$depth=="top"), ]
+top_Hp <- top_Hp[!duplicated(top_Hp[,2]), ]
 
 # Topsoil cum distribution plots ------------------------------------------
 par(mfrow=c(3,2), mar=c(5,4.5,1,1))
@@ -164,6 +194,36 @@ top_Zn <- reshape(top_Zn, direction="long", varying=58:60, idvar="ssid", v.names
 top_Zn$lo <- ifelse(top_Zn$Zn < quantile(ref$Zn, probs=plo), 1, 0) ## identifies low levels
 top_Zn$hi <- ifelse(top_Zn$Zn > quantile(ref$Zn, probs=phi), 1, 0) ## identifies high levels
 
+# Topsoil Calcium predictions
+names(top_Ca)[58:60] <- c("p.5", "p.50", "p.95")
+top_Ca <- reshape(top_Ca, direction="long", varying=58:60, idvar="ssid", v.names="Ca", timevar="plevel") ## long format
+top_Ca$lo <- ifelse(top_Ca$Ca < quantile(ref$Ca, probs=plo), 1, 0) ## identifies low levels
+top_Ca$hi <- ifelse(top_Ca$Ca > quantile(ref$Ca, probs=phi), 1, 0) ## identifies high levels
+
+# Topsoil Magnesium predictions
+names(top_Mg)[58:60] <- c("p.5", "p.50", "p.95")
+top_Mg <- reshape(top_Mg, direction="long", varying=58:60, idvar="ssid", v.names="Mg", timevar="plevel") ## long format
+top_Mg$lo <- ifelse(top_Mg$Mg < quantile(ref$Mg, probs=plo), 1, 0) ## identifies low levels
+top_Mg$hi <- ifelse(top_Mg$Mg > quantile(ref$Mg, probs=phi), 1, 0) ## identifies high levels
+
+# Topsoil pH predictions
+names(top_pH)[58:60] <- c("p.5", "p.50", "p.95")
+top_pH <- reshape(top_pH, direction="long", varying=58:60, idvar="ssid", v.names="pH", timevar="plevel") ## long format
+top_pH$lo <- ifelse(top_pH$pH < quantile(ref$pH, probs=plo), 1, 0) ## identifies low levels
+top_pH$hi <- ifelse(top_pH$pH > quantile(ref$pH, probs=phi), 1, 0) ## identifies high levels
+
+# Topsoil electrical conductivity (EC) predictions
+names(top_EC)[58:60] <- c("p.5", "p.50", "p.95")
+top_EC <- reshape(top_EC, direction="long", varying=58:60, idvar="ssid", v.names="EC", timevar="plevel") ## long format
+top_EC$lo <- ifelse(top_EC$EC < quantile(ref$EC/100, probs=plo), 1, 0) ## identifies low levels
+top_EC$hi <- ifelse(top_EC$EC > quantile(ref$EC/100, probs=phi), 1, 0) ## identifies high levels
+
+# Topsoil exchangeable acidity (Hp) predictions
+names(top_Hp)[58:60] <- c("p.5", "p.50", "p.95")
+top_Hp <- reshape(top_Hp, direction="long", varying=58:60, idvar="ssid", v.names="Hp", timevar="plevel") ## long format
+top_Hp$lo <- ifelse(top_Hp$Hp < quantile(ref$Hp, probs=plo), 1, 0) ## identifies low levels
+top_Hp$hi <- ifelse(top_Hp$Hp > quantile(ref$Hp, probs=phi), 1, 0) ## identifies high levels
+
 # Hi/Lo summaries ---------------------------------------------------------
 # Topsoil C
 C_lo <- table(top_C$plevel, top_C$lo)
@@ -206,3 +266,33 @@ Zn_lo <- table(top_Zn$plevel, top_Zn$lo)
 prop.table(Zn_lo,1)*100
 Zn_hi <- table(top_Zn$plevel, top_Zn$hi)
 prop.table(Zn_hi,1)*100
+
+# Topsoil Calcium
+Ca_lo <- table(top_Ca$plevel, top_Ca$lo)
+prop.table(Ca_lo,1)*100
+Ca_hi <- table(top_Ca$plevel, top_Ca$hi)
+prop.table(Ca_hi,1)*100
+
+# Topsoil Magnesium
+Mg_lo <- table(top_Mg$plevel, top_Mg$lo)
+prop.table(Mg_lo,1)*100
+Mg_hi <- table(top_Mg$plevel, top_Mg$hi)
+prop.table(Mg_hi,1)*100
+
+# Topsoil pH
+pH_lo <- table(top_pH$plevel, top_pH$lo)
+prop.table(pH_lo,1)*100
+pH_hi <- table(top_pH$plevel, top_pH$hi)
+prop.table(pH_hi,1)*100
+
+# Topsoil electrical conductivity (EC)
+EC_lo <- table(top_EC$plevel, top_EC$lo)
+prop.table(EC_lo,1)*100
+EC_hi <- table(top_EC$plevel, top_EC$hi)
+prop.table(EC_hi,1)*100
+
+# Topsoil exchangeable acidity (Hp)
+Hp_lo <- table(top_Hp$plevel, top_Hp$lo)
+prop.table(Hp_lo,1)*100
+Hp_hi <- table(top_Hp$plevel, top_Hp$hi)
+prop.table(Hp_hi,1)*100
