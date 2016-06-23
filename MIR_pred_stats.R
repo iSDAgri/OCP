@@ -157,72 +157,84 @@ names(top_C)[58:60] <- c("p.5", "p.50", "p.95")
 top_C <- reshape(top_C, direction="long", varying=58:60, idvar="ssid", v.names="C", timevar="plevel") ## long format
 top_C$lo <- ifelse(top_C$C < quantile(ref$C/10000, probs=plo), 1, 0) ## identifies low levels
 top_C$hi <- ifelse(top_C$C > quantile(ref$C/10000, probs=phi), 1, 0) ## identifies high levels
+top_C <- top_C[,c(1:7,58:61)]
 
 # Topsoil Nitrogen predictions
 names(top_N)[58:60] <- c("p.5", "p.50", "p.95")
 top_N <- reshape(top_N, direction="long", varying=58:60, idvar="ssid", v.names="N", timevar="plevel") ## long format
 top_N$lo <- ifelse(top_N$N < quantile(ref$N/10000, probs=plo), 1, 0) ## identifies low levels
 top_N$hi <- ifelse(top_N$N > quantile(ref$N/10000, probs=phi), 1, 0) ## identifies high levels
+top_N <- top_N[,c(1:7,58:61)]
 
 # Topsoil Phosphorus predictions
 names(top_P)[58:60] <- c("p.5", "p.50", "p.95")
 top_P <- reshape(top_P, direction="long", varying=58:60, idvar="ssid", v.names="P", timevar="plevel") ## long format
 top_P$lo <- ifelse(top_P$P < quantile(ref$P, probs=plo), 1, 0) ## identifies low levels
 top_P$hi <- ifelse(top_P$P > quantile(ref$P, probs=phi), 1, 0) ## identifies high levels
+top_P <- top_P[,c(1:7,58:61)]
 
 # Topsoil Potassium predictions
 names(top_K)[58:60] <- c("p.5", "p.50", "p.95")
 top_K <- reshape(top_K, direction="long", varying=58:60, idvar="ssid", v.names="K", timevar="plevel") ## long format
 top_K$lo <- ifelse(top_K$K < quantile(ref$K, probs=plo), 1, 0) ## identifies low levels
 top_K$hi <- ifelse(top_K$K > quantile(ref$K, probs=phi), 1, 0) ## identifies high levels
+top_K <- top_K[,c(1:7,58:61)]
 
 # Topsoil Sulfur predictions
 names(top_S)[58:60] <- c("p.5", "p.50", "p.95")
 top_S <- reshape(top_S, direction="long", varying=58:60, idvar="ssid", v.names="S", timevar="plevel") ## long format
 top_S$lo <- ifelse(top_S$S < quantile(ref$S, probs=plo), 1, 0) ## identifies low levels
 top_S$hi <- ifelse(top_S$S > quantile(ref$S, probs=phi), 1, 0) ## identifies high levels
+top_S <- top_S[,c(1:7,58:61)]
 
 # Topsoil Boron predictions
 names(top_B)[58:60] <- c("p.5", "p.50", "p.95")
 top_B <- reshape(top_B, direction="long", varying=58:60, idvar="ssid", v.names="B", timevar="plevel") ## long format
 top_B$lo <- ifelse(top_B$B < quantile(ref$B, probs=plo), 1, 0) ## identifies low levels
 top_B$hi <- ifelse(top_B$B > quantile(ref$B, probs=phi), 1, 0) ## identifies high levels
+top_B <- top_B[,c(1:7,58:61)]
 
 # Topsoil Zinc predictions
 names(top_Zn)[58:60] <- c("p.5", "p.50", "p.95")
 top_Zn <- reshape(top_Zn, direction="long", varying=58:60, idvar="ssid", v.names="Zn", timevar="plevel") ## long format
 top_Zn$lo <- ifelse(top_Zn$Zn < quantile(ref$Zn, probs=plo), 1, 0) ## identifies low levels
 top_Zn$hi <- ifelse(top_Zn$Zn > quantile(ref$Zn, probs=phi), 1, 0) ## identifies high levels
+top_Zn <- top_Zn[,c(1:7,58:61)]
 
 # Topsoil Calcium predictions
 names(top_Ca)[58:60] <- c("p.5", "p.50", "p.95")
 top_Ca <- reshape(top_Ca, direction="long", varying=58:60, idvar="ssid", v.names="Ca", timevar="plevel") ## long format
 top_Ca$lo <- ifelse(top_Ca$Ca < quantile(ref$Ca, probs=plo), 1, 0) ## identifies low levels
 top_Ca$hi <- ifelse(top_Ca$Ca > quantile(ref$Ca, probs=phi), 1, 0) ## identifies high levels
+top_Ca <- top_Ca[,c(1:7,58:61)]
 
 # Topsoil Magnesium predictions
 names(top_Mg)[58:60] <- c("p.5", "p.50", "p.95")
 top_Mg <- reshape(top_Mg, direction="long", varying=58:60, idvar="ssid", v.names="Mg", timevar="plevel") ## long format
 top_Mg$lo <- ifelse(top_Mg$Mg < quantile(ref$Mg, probs=plo), 1, 0) ## identifies low levels
 top_Mg$hi <- ifelse(top_Mg$Mg > quantile(ref$Mg, probs=phi), 1, 0) ## identifies high levels
+top_Mg <- top_Mg[,c(1:7,58:61)]
 
 # Topsoil pH predictions
 names(top_pH)[58:60] <- c("p.5", "p.50", "p.95")
 top_pH <- reshape(top_pH, direction="long", varying=58:60, idvar="ssid", v.names="pH", timevar="plevel") ## long format
 top_pH$lo <- ifelse(top_pH$pH < quantile(ref$pH, probs=plo), 1, 0) ## identifies low levels
 top_pH$hi <- ifelse(top_pH$pH > quantile(ref$pH, probs=phi), 1, 0) ## identifies high levels
+top_pH <- top_pH[,c(1:7,58:61)]
 
 # Topsoil electrical conductivity (EC) predictions
 names(top_EC)[58:60] <- c("p.5", "p.50", "p.95")
 top_EC <- reshape(top_EC, direction="long", varying=58:60, idvar="ssid", v.names="EC", timevar="plevel") ## long format
 top_EC$lo <- ifelse(top_EC$EC < quantile(ref$EC*1000, probs=plo), 1, 0) ## identifies low levels
 top_EC$hi <- ifelse(top_EC$EC > quantile(ref$EC*1000, probs=phi), 1, 0) ## identifies high levels
+top_EC <- top_EC[,c(1:7,58:61)]
 
 # Topsoil exchangeable acidity (Hp) predictions
 names(top_Hp)[58:60] <- c("p.5", "p.50", "p.95")
 top_Hp <- reshape(top_Hp, direction="long", varying=58:60, idvar="ssid", v.names="Hp", timevar="plevel") ## long format
 top_Hp$lo <- ifelse(top_Hp$Hp < quantile(ref$Hp, probs=plo), 1, 0) ## identifies low levels
 top_Hp$hi <- ifelse(top_Hp$Hp > quantile(ref$Hp, probs=phi), 1, 0) ## identifies high levels
+top_Hp <- top_Hp[,c(1:7,58:61)]
 
 # Hi/Lo summaries ---------------------------------------------------------
 # Topsoil C
