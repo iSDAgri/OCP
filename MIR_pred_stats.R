@@ -215,8 +215,8 @@ top_pH$hi <- ifelse(top_pH$pH > quantile(ref$pH, probs=phi), 1, 0) ## identifies
 # Topsoil electrical conductivity (EC) predictions
 names(top_EC)[58:60] <- c("p.5", "p.50", "p.95")
 top_EC <- reshape(top_EC, direction="long", varying=58:60, idvar="ssid", v.names="EC", timevar="plevel") ## long format
-top_EC$lo <- ifelse(top_EC$EC < quantile(ref$EC/100, probs=plo), 1, 0) ## identifies low levels
-top_EC$hi <- ifelse(top_EC$EC > quantile(ref$EC/100, probs=phi), 1, 0) ## identifies high levels
+top_EC$lo <- ifelse(top_EC$EC < quantile(ref$EC*1000, probs=plo), 1, 0) ## identifies low levels
+top_EC$hi <- ifelse(top_EC$EC > quantile(ref$EC*1000, probs=phi), 1, 0) ## identifies high levels
 
 # Topsoil exchangeable acidity (Hp) predictions
 names(top_Hp)[58:60] <- c("p.5", "p.50", "p.95")
