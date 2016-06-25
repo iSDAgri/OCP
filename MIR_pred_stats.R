@@ -177,14 +177,6 @@ plot(ecdf(top_Zn$p95), add=T, verticals=T, lty=1, lwd=2, col="dark grey", do.poi
 par(mfrow=c(1,1))
 
 # MIR prediction data reshape ---------------------------------------------
-# Topsoil Organic Carbon predictions
-names(top_C)[58:60] <- c("p.5", "p.50", "p.95")
-top_C <- reshape(top_C, direction="long", varying=58:60, idvar="ssid", v.names="C", timevar="plevel") ## long format
-top_C$lo <- ifelse(top_C$C < quantile(ref$C/10000, probs=plo), 1, 0) ## identifies low levels
-top_C$hi <- ifelse(top_C$C > quantile(ref$C/10000, probs=phi), 1, 0) ## identifies high levels
-top_C <- top_C[,c(1:7,58:61)]
-
-# Topsoil Nitrogen predictions
 # Topsoil pH predictions
 names(top_pH)[58:60] <- c("p.5", "p.50", "p.95")
 top_pH <- reshape(top_pH, direction="long", varying=58:60, idvar="ssid", v.names="pH", timevar="plevel") ## long format
