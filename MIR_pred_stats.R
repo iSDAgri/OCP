@@ -9,9 +9,11 @@ require(downloader)
 dir.create("MIR_data", showWarnings=F)
 setwd("./MIR_data")
 
-# Download M3 prediction data
+# Download MIR-M3 prediction data
 download("https://www.dropbox.com/s/uyelu38ah6zos6h/OCP_KBR_pred.zip?dl=0", "OCP_KBR_pred.zip", mode="wb")
 unzip("OCP_KBR_pred.zip", overwrite=T)
+pH <- read.table("pH_pred.csv", header=T, sep=",")
+EC <- read.table("EC_pred.csv", header=T, sep=",")
 C <-  read.table("C_pred.csv", header=T, sep=",")
 N <-  read.table("N_pred.csv", header=T, sep=",")
 B <-  read.table("B_pred.csv", header=T, sep=",")
@@ -26,8 +28,6 @@ Cu <- read.table("Cu_pred.csv", header=T, sep=",")
 Zn <- read.table("Zn_pred.csv", header=T, sep=",")
 Al <- read.table("Al_pred.csv", header=T, sep=",")
 Na <- read.table("Na_pred.csv", header=T, sep=",")
-pH <- read.table("pH_pred.csv", header=T, sep=",")
-EC <- read.table("EC_pred.csv", header=T, sep=",")
 Hp <- read.table("Hp_pred.csv", header=T, sep=",")
 
 # Sample ID codebook
@@ -191,6 +191,7 @@ top_EC$lo <- ifelse(top_EC$EC < quantile(ref$EC*1000, probs=plo), 1, 0) ## ident
 top_EC$hi <- ifelse(top_EC$EC > quantile(ref$EC*1000, probs=phi), 1, 0) ## identifies high levels
 top_EC <- top_EC[,c(1:7,58:61)]
 
+# Topsoil organic Carbon predictions
 names(top_C)[58:60] <- c("p.5", "p.50", "p.95")
 top_C <- reshape(top_C, direction="long", varying=58:60, idvar="ssid", v.names="C", timevar="plevel") ## long format
 top_C$lo <- ifelse(top_C$C < quantile(ref$C/10000, probs=plo), 1, 0) ## identifies low levels
@@ -295,60 +296,6 @@ top_Hp$hi <- ifelse(top_Hp$Hp > quantile(ref$Hp, probs=phi), 1, 0) ## identifies
 top_Hp <- top_Hp[,c(1:7,58:61)]
 
 # Hi/Lo summaries ---------------------------------------------------------
-# Topsoil C
-C_lo <- table(top_C$plevel, top_C$lo)
-prop.table(C_lo,1)*100
-C_hi <- table(top_C$plevel, top_C$hi)
-prop.table(C_hi,1)*100
-
-# Topsoil Nitrogen
-N_lo <- table(top_N$plevel, top_N$lo)
-prop.table(N_lo,1)*100
-N_hi <- table(top_N$plevel, top_N$hi)
-prop.table(N_hi,1)*100
-
-# Topsoil Phosphorus
-P_lo <- table(top_P$plevel, top_P$lo)
-prop.table(P_lo,1)*100
-P_hi <- table(top_P$plevel, top_P$hi)
-prop.table(P_hi,1)*100
-
-# Topsoil Potassium
-K_lo <- table(top_K$plevel, top_K$lo)
-prop.table(K_lo,1)*100
-K_hi <- table(top_K$plevel, top_K$hi)
-prop.table(K_hi,1)*100
-
-# Topsoil Sulfur
-S_lo <- table(top_S$plevel, top_S$lo)
-prop.table(S_lo,1)*100
-S_hi <- table(top_S$plevel, top_S$hi)
-prop.table(S_hi,1)*100
-
-# Topsoil Boron
-B_lo <- table(top_B$plevel, top_B$lo)
-prop.table(B_lo,1)*100
-B_hi <- table(top_B$plevel, top_B$hi)
-prop.table(B_hi,1)*100
-
-# Topsoil Zinc
-Zn_lo <- table(top_Zn$plevel, top_Zn$lo)
-prop.table(Zn_lo,1)*100
-Zn_hi <- table(top_Zn$plevel, top_Zn$hi)
-prop.table(Zn_hi,1)*100
-
-# Topsoil Calcium
-Ca_lo <- table(top_Ca$plevel, top_Ca$lo)
-prop.table(Ca_lo,1)*100
-Ca_hi <- table(top_Ca$plevel, top_Ca$hi)
-prop.table(Ca_hi,1)*100
-
-# Topsoil Magnesium
-Mg_lo <- table(top_Mg$plevel, top_Mg$lo)
-prop.table(Mg_lo,1)*100
-Mg_hi <- table(top_Mg$plevel, top_Mg$hi)
-prop.table(Mg_hi,1)*100
-
 # Topsoil pH
 pH_lo <- table(top_pH$plevel, top_pH$lo)
 prop.table(pH_lo,1)*100
@@ -361,8 +308,99 @@ prop.table(EC_lo,1)*100
 EC_hi <- table(top_EC$plevel, top_EC$hi)
 prop.table(EC_hi,1)*100
 
+# Topsoil organic Carbon
+C_lo <- table(top_C$plevel, top_C$lo)
+prop.table(C_lo,1)*100
+C_hi <- table(top_C$plevel, top_C$hi)
+prop.table(C_hi,1)*100
+
+# Topsoil Nitrogen
+N_lo <- table(top_N$plevel, top_N$lo)
+prop.table(N_lo,1)*100
+N_hi <- table(top_N$plevel, top_N$hi)
+prop.table(N_hi,1)*100
+
+# Topsoil Boron
+B_lo <- table(top_B$plevel, top_B$lo)
+prop.table(B_lo,1)*100
+B_hi <- table(top_B$plevel, top_B$hi)
+prop.table(B_hi,1)*100
+
+# Topsoil Magnesium
+Mg_lo <- table(top_Mg$plevel, top_Mg$lo)
+prop.table(Mg_lo,1)*100
+Mg_hi <- table(top_Mg$plevel, top_Mg$hi)
+prop.table(Mg_hi,1)*100
+
+# Topsoil Phosphorus
+P_lo <- table(top_P$plevel, top_P$lo)
+prop.table(P_lo,1)*100
+P_hi <- table(top_P$plevel, top_P$hi)
+prop.table(P_hi,1)*100
+
+# Topsoil Sulfur
+S_lo <- table(top_S$plevel, top_S$lo)
+prop.table(S_lo,1)*100
+S_hi <- table(top_S$plevel, top_S$hi)
+prop.table(S_hi,1)*100
+
+# Topsoil Potassium
+K_lo <- table(top_K$plevel, top_K$lo)
+prop.table(K_lo,1)*100
+K_hi <- table(top_K$plevel, top_K$hi)
+prop.table(K_hi,1)*100
+
+# Topsoil Calcium
+Ca_lo <- table(top_Ca$plevel, top_Ca$lo)
+prop.table(Ca_lo,1)*100
+Ca_hi <- table(top_Ca$plevel, top_Ca$hi)
+prop.table(Ca_hi,1)*100
+
+# Topsoil Manganese
+Mn_lo <- table(top_Mn$plevel, top_Mn$lo)
+prop.table(Mn_lo,1)*100
+Mn_hi <- table(top_Mn$plevel, top_Mn$hi)
+prop.table(Mn_hi,1)*100
+
+# Topsoil Iron
+Fe_lo <- table(top_Fe$plevel, top_Fe$lo)
+prop.table(Fe_lo,1)*100
+Fe_hi <- table(top_Fe$plevel, top_Fe$hi)
+prop.table(Fe_hi,1)*100
+
+# Topsoil Copper
+Cu_lo <- table(top_Cu$plevel, top_Cu$lo)
+prop.table(Cu_lo,1)*100
+Cu_hi <- table(top_Cu$plevel, top_Cu$hi)
+prop.table(Cu_hi,1)*100
+
+# Topsoil Zinc
+Zn_lo <- table(top_Zn$plevel, top_Zn$lo)
+prop.table(Zn_lo,1)*100
+Zn_hi <- table(top_Zn$plevel, top_Zn$hi)
+prop.table(Zn_hi,1)*100
+
+# Topsoil Aluminum
+Al_lo <- table(top_Al$plevel, top_Al$lo)
+prop.table(Al_lo,1)*100
+Al_hi <- table(top_Al$plevel, top_Al$hi)
+prop.table(Al_hi,1)*100
+
+# Topsoil Sodium
+Na_lo <- table(top_Na$plevel, top_Na$lo)
+prop.table(Na_lo,1)*100
+Na_hi <- table(top_Na$plevel, top_Na$hi)
+prop.table(Na_hi,1)*100
+
 # Topsoil exchangeable acidity (Hp)
 Hp_lo <- table(top_Hp$plevel, top_Hp$lo)
 prop.table(Hp_lo,1)*100
 Hp_hi <- table(top_Hp$plevel, top_Hp$hi)
 prop.table(Hp_hi,1)*100
+
+# Write long MIR prediction file ------------------------------------------
+lpred <- cbind(top_pH[,1:9], top_EC["EC"], top_C["C"], top_N["N"], top_B["B"], top_Mg["Mg"], top_P["P"],
+               top_S["S"], top_K["K"], top_Ca["Ca"], top_Mn["Mn"], top_Fe["Fe"], top_Cu["Cu"], top_Zn["Zn"],
+               top_Al["Al"], top_Na["Na"], top_Hp["Hp"])
+write.csv(lpred, "top_MIR_pred_long.csv", row.names=F)
+
