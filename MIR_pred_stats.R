@@ -1,4 +1,4 @@
-#' Data summaries of MIR-M3 prediction results
+#' Data summaries of MIR prediction results
 #' M. Walsh, June 2016
 
 # install.packages(c("downloader","compositions"), dependencies=T)
@@ -9,7 +9,7 @@ require(downloader)
 dir.create("MIR_data", showWarnings=F)
 setwd("./MIR_data")
 
-# Download MIR-M3 prediction data
+# Download MIR prediction data
 download("https://www.dropbox.com/s/uyelu38ah6zos6h/OCP_KBR_pred.zip?dl=0", "OCP_KBR_pred.zip", mode="wb")
 unzip("OCP_KBR_pred.zip", overwrite=T)
 pH <- read.table("pH_pred.csv", header=T, sep=",")
