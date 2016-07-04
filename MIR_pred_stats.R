@@ -3,6 +3,10 @@
 
 # install.packages(c("downloader","compositions"), dependencies=T)
 require(downloader)
+require(rgdal)
+require(raster)
+require(maptools)
+require(spgwr)
 
 # Data setup --------------------------------------------------------------
 # Create a data folder in your current working directory
@@ -43,89 +47,160 @@ ref <- ref[which(ref$Depth==10), ] ## select topsoils
 ref <- na.omit(ref) ## omit any missing values
 
 # Topsoil prediction data setup -------------------------------------------
-# Topsoil pH predictions
-top_pH <- merge(ssid, pH, by="SSN")
-top_pH <- top_pH[which(top_pH$depth=="top"), ]
+# Topsoil pH
+pH_lo <- quantile(ref$pH, probs=0.25) ## low reference level
+pH_hi <- quantile(ref$pH, probs=0.75) ## high reference level
+top_pH <- merge(ssid, pH, by="SSN") ## attaches codebook, lon/lat etc
+top_pH <- top_pH[which(top_pH$depth=="top"), ] 
 top_pH <- top_pH[!duplicated(top_pH[,2]), ]
+top_pH$pH_lo <- rowSums(top_pH[,8:57]< pH_lo) ## calculates number of MCMC draws < pH_lo
+top_pH$pH_hi <- rowSums(top_pH[,8:57]> pH_hi) ## calculates number of MCMC draws > pH_hi
 
-# Topsoil electrical conductivity (EC) predictions
+# test <- glm(cbind(pH_hi, 50-pH_hi)~1, family=binomial(link="logit"), data=top_pH)
+
+# Topsoil electrical conductivity (EC)
+EC_lo <- quantile(ref$EC*1000, probs=0.25)
+EC_hi <- quantile(ref$EC*1000, probs=0.75)
 top_EC <- merge(ssid, EC, by="SSN")
 top_EC <- top_EC[which(top_EC$depth=="top"), ]
 top_EC <- top_EC[!duplicated(top_EC[,2]), ]
+top_EC$EC_lo <- rowSums(top_EC[,8:57]< EC_lo)
+top_EC$EC_hi <- rowSums(top_EC[,8:57]> EC_hi)
 
+# Topsoil organic Carbon
+C_lo <- quantile(ref$C/10000, probs=0.25)
+C_hi <- quantile(ref$C/10000, probs=0.75)
 top_C <- merge(ssid, C, by="SSN")
 top_C <- top_C[which(top_C$depth=="top"), ]
 top_C <- top_C[!duplicated(top_C[,2]), ]
+top_C$C_lo <- rowSums(top_C[,8:57]< C_lo)
+top_C$C_hi <- rowSums(top_C[,8:57]> C_hi)
 
-# Topsoil Nitrogen predictions
+# Topsoil Nitrogen
+N_lo <- quantile(ref$N/10000, probs=0.25)
+N_hi <- quantile(ref$N/10000, probs=0.75)
 top_N <- merge(ssid, N, by="SSN")
 top_N <- top_N[which(top_N$depth=="top"), ]
 top_N <- top_N[!duplicated(top_N[,2]), ]
+top_N$N_lo <- rowSums(top_N[,8:57]< N_lo)
+top_N$N_hi <- rowSums(top_N[,8:57]> N_hi)
 
-# Topsoil Boron predictions
+# Topsoil Boron
+B_lo <- quantile(ref$B, probs=0.25)
+B_hi <- quantile(ref$B, probs=0.75)
 top_B <- merge(ssid, B, by="SSN")
 top_B <- top_B[which(top_B$depth=="top"), ]
 top_B <- top_B[!duplicated(top_B[,2]), ]
+top_B$B_lo <- rowSums(top_B[,8:57]< B_lo)
+top_B$B_hi <- rowSums(top_B[,8:57]> B_hi)
 
-# Topsoil Magnesium predictions
+# Topsoil Magnesium
+Mg_lo <- quantile(ref$Mg, probs=0.25)
+Mg_hi <- quantile(ref$Mg, probs=0.75)
 top_Mg <- merge(ssid, Mg, by="SSN")
 top_Mg <- top_Mg[which(top_Mg$depth=="top"), ]
 top_Mg <- top_Mg[!duplicated(top_Mg[,2]), ]
+top_Mg$Mg_lo <- rowSums(top_Mg[,8:57]< Mg_lo)
+top_Mg$Mg_hi <- rowSums(top_Mg[,8:57]> Mg_hi)
 
-# Topsoil Phosporus predictions
+# Topsoil Phosporus
+P_lo <- quantile(ref$P, probs=0.25)
+P_hi <- quantile(ref$P, probs=0.75)
 top_P <- merge(ssid, P, by="SSN")
 top_P <- top_P[which(top_P$depth=="top"), ]
 top_P <- top_P[!duplicated(top_P[,2]), ]
+top_P$P_lo <- rowSums(top_P[,8:57]< P_lo)
+top_P$P_hi <- rowSums(top_P[,8:57]> P_hi)
 
-# Topsoil Sulfur predictions
+# Topsoil Sulfur
+S_lo <- quantile(ref$S, probs=0.25)
+S_hi <- quantile(ref$S, probs=0.75)
 top_S <- merge(ssid, S, by="SSN")
 top_S <- top_S[which(top_S$depth=="top"), ]
 top_S <- top_S[!duplicated(top_S[,2]), ]
+top_S$S_lo <- rowSums(top_S[,8:57]< S_lo)
+top_S$S_hi <- rowSums(top_S[,8:57]> S_hi)
 
-# Topsoil Potassium predictions
+# Topsoil Potassium
+K_lo <- quantile(ref$K, probs=0.25)
+K_hi <- quantile(ref$K, probs=0.75)
 top_K <- merge(ssid, K, by="SSN")
 top_K <- top_K[which(top_K$depth=="top"), ]
 top_K <- top_K[!duplicated(top_K[,2]), ]
+top_K$K_lo <- rowSums(top_K[,8:57]< K_lo)
+top_K$K_hi <- rowSums(top_K[,8:57]> K_hi)
 
-# Topsoil Calcium predictions
+# Topsoil Calcium
+Ca_lo <- quantile(ref$Ca, probs=0.25)
+Ca_hi <- quantile(ref$Ca, probs=0.75)
 top_Ca <- merge(ssid, Ca, by="SSN")
 top_Ca <- top_Ca[which(top_Ca$depth=="top"), ]
 top_Ca <- top_Ca[!duplicated(top_Ca[,2]), ]
+top_Ca$Ca_lo <- rowSums(top_Ca[,8:57]< Ca_lo)
+top_Ca$Ca_hi <- rowSums(top_Ca[,8:57]> Ca_hi)
 
-# Topsoil Manganese predictions
+# Topsoil Manganese
+Mn_lo <- quantile(ref$Mn, probs=0.25)
+Mn_hi <- quantile(ref$Mn, probs=0.75)
 top_Mn <- merge(ssid, Mn, by="SSN")
 top_Mn <- top_Mn[which(top_Mn$depth=="top"), ]
 top_Mn <- top_Mn[!duplicated(top_Mn[,2]), ]
+top_Mn$Mn_lo <- rowSums(top_Mn[,8:57]< Mn_lo)
+top_Mn$Mn_hi <- rowSums(top_Mn[,8:57]> Mn_hi)
 
-# Topsoil Iron predictions
+# Topsoil Iron
+Fe_lo <- quantile(ref$Fe, probs=0.25)
+Fe_hi <- quantile(ref$Fe, probs=0.75)
 top_Fe <- merge(ssid, Fe, by="SSN")
 top_Fe <- top_Fe[which(top_Fe$depth=="top"), ]
 top_Fe <- top_Fe[!duplicated(top_Fe[,2]), ]
+top_Fe$Fe_lo <- rowSums(top_Fe[,8:57]< Fe_lo)
+top_Fe$Fe_hi <- rowSums(top_Fe[,8:57]> Fe_hi)
 
-# Topsoil Copper predictions
+# Topsoil Copper
+Cu_lo <- quantile(ref$Cu, probs=0.25)
+Cu_hi <- quantile(ref$Cu, probs=0.75)
 top_Cu <- merge(ssid, Cu, by="SSN")
 top_Cu <- top_Cu[which(top_Cu$depth=="top"), ]
 top_Cu <- top_Cu[!duplicated(top_Cu[,2]), ]
+top_Cu$Cu_lo <- rowSums(top_Cu[,8:57]< Cu_lo)
+top_Cu$Cu_hi <- rowSums(top_Cu[,8:57]> Cu_hi)
 
-# Topsoil Zinc predictions
+# Topsoil Zinc
+Zn_lo <- quantile(ref$Zn, probs=0.25)
+Zn_hi <- quantile(ref$Zn, probs=0.75)
 top_Zn <- merge(ssid, Zn, by="SSN")
 top_Zn <- top_Zn[which(top_Zn$depth=="top"), ]
 top_Zn <- top_Zn[!duplicated(top_Zn[,2]), ]
+top_Zn$Zn_lo <- rowSums(top_Zn[,8:57]< Zn_lo)
+top_Zn$Zn_hi <- rowSums(top_Zn[,8:57]> Zn_hi)
 
-# Topsoil Aluminum predictions
+# Topsoil Aluminum
+Al_lo <- quantile(ref$Al, probs=0.25)
+Al_hi <- quantile(ref$Al, probs=0.75)
 top_Al <- merge(ssid, Al, by="SSN")
 top_Al <- top_Al[which(top_Al$depth=="top"), ]
 top_Al <- top_Al[!duplicated(top_Al[,2]), ]
+top_Al$Al_lo <- rowSums(top_Al[,8:57]< Al_lo)
+top_Al$Al_hi <- rowSums(top_Al[,8:57]> Al_hi)
 
-# Topsoil Sodium predictions
+# Topsoil Sodium
+Na_lo <- quantile(ref$Na, probs=0.25)
+Na_hi <- quantile(ref$Na, probs=0.75)
 top_Na <- merge(ssid, Na, by="SSN")
 top_Na <- top_Na[which(top_Na$depth=="top"), ]
 top_Na <- top_Na[!duplicated(top_Na[,2]), ]
+top_Na$Na_lo <- rowSums(top_Na[,8:57]< Na_lo)
+top_Na$Na_hi <- rowSums(top_Na[,8:57]> Na_hi)
 
-# Topsoil exchangeable acidity (Hp) predictions
+# Topsoil exchangeable acidity (Hp)
+Hp_lo <- quantile(ref$Hp, probs=0.25)
+Hp_hi <- quantile(ref$Hp, probs=0.75)
 top_Hp <- merge(ssid, Hp, by="SSN")
 top_Hp <- top_Hp[which(top_Hp$depth=="top"), ]
 top_Hp <- top_Hp[!duplicated(top_Hp[,2]), ]
+top_Hp$Hp_lo <- rowSums(top_Hp[,8:57]< Hp_lo)
+top_Hp$Hp_hi <- rowSums(top_Hp[,8:57]> Hp_hi)
 
 # Topsoil cum distribution plots ------------------------------------------
 par(mfrow=c(3,2), mar=c(5,4.5,1,1))
@@ -176,231 +251,83 @@ plot(ecdf(top_Zn$p95), add=T, verticals=T, lty=1, lwd=2, col="dark grey", do.poi
 
 par(mfrow=c(1,1))
 
-# MIR prediction data reshape ---------------------------------------------
-# Topsoil pH predictions
-names(top_pH)[58:60] <- c("p.5", "p.50", "p.95")
-top_pH <- reshape(top_pH, direction="long", varying=58:60, idvar="ssid", v.names="pH", timevar="plevel") ## long format
-top_pH$lo <- ifelse(top_pH$pH < quantile(ref$pH, probs=plo), 1, 0) ## identifies low levels
-top_pH$hi <- ifelse(top_pH$pH > quantile(ref$pH, probs=phi), 1, 0) ## identifies high levels
-top_pH <- top_pH[,c(1:7,58:61)]
+# Geographically weighted regressions -------------------------------------
+# Data setup
+mirpred <- cbind(top_pH[c(1:7,61:62)], top_EC[61:62], top_C[61:62], top_N[61:62], top_B[61:62], top_Mg[61:62], top_P[61:62],
+                 top_S[61:62], top_K[61:62], top_Ca[61:62], top_Mn[61:62], top_Fe[61:62], top_Cu[61:62], top_Zn[61:62],
+                 top_Al[61:62], top_Na[61:62], top_Hp[61:62])
 
-# Topsoil electrical conductivity (EC) predictions
-names(top_EC)[58:60] <- c("p.5", "p.50", "p.95")
-top_EC <- reshape(top_EC, direction="long", varying=58:60, idvar="ssid", v.names="EC", timevar="plevel") ## long format
-top_EC$lo <- ifelse(top_EC$EC < quantile(ref$EC*1000, probs=plo), 1, 0) ## identifies low levels
-top_EC$hi <- ifelse(top_EC$EC > quantile(ref$EC*1000, probs=phi), 1, 0) ## identifies high levels
-top_EC <- top_EC[,c(1:7,58:61)]
+# Project coords to Lambert Azimuthal Equal Area (laea) CRS
+mirpred.proj <- as.data.frame(project(cbind(mirpred$lon, mirpred$lat), "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"))
+colnames(mirpred.proj) <- c("x","y") ## laea coordinates
+mirpred <- cbind(mirpred, mirpred.proj)
+coordinates(mirpred) <- ~x+y
+crs(mirpred) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
 
-# Topsoil organic Carbon predictions
-names(top_C)[58:60] <- c("p.5", "p.50", "p.95")
-top_C <- reshape(top_C, direction="long", varying=58:60, idvar="ssid", v.names="C", timevar="plevel") ## long format
-top_C$lo <- ifelse(top_C$C < quantile(ref$C/10000, probs=plo), 1, 0) ## identifies low levels
-top_C$hi <- ifelse(top_C$C > quantile(ref$C/10000, probs=phi), 1, 0) ## identifies high levels
-top_C <- top_C[,c(1:7,58:61)]
+# Topsoil pH regressions 
+pH.lo <- ggwr(I(pH_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
+pH.hi <- ggwr(I(pH_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
 
-names(top_N)[58:60] <- c("p.5", "p.50", "p.95")
-top_N <- reshape(top_N, direction="long", varying=58:60, idvar="ssid", v.names="N", timevar="plevel") ## long format
-top_N$lo <- ifelse(top_N$N < quantile(ref$N/10000, probs=plo), 1, 0) ## identifies low levels
-top_N$hi <- ifelse(top_N$N > quantile(ref$N/10000, probs=phi), 1, 0) ## identifies high levels
-top_N <- top_N[,c(1:7,58:61)]
+# Topsoil electrical conductivity (EC) regressions 
+EC.lo <- ggwr(I(EC_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
+EC.hi <- ggwr(I(EC_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
 
-# Topsoil Boron predictions
-names(top_B)[58:60] <- c("p.5", "p.50", "p.95")
-top_B <- reshape(top_B, direction="long", varying=58:60, idvar="ssid", v.names="B", timevar="plevel") ## long format
-top_B$lo <- ifelse(top_B$B < quantile(ref$B, probs=plo), 1, 0) ## identifies low levels
-top_B$hi <- ifelse(top_B$B > quantile(ref$B, probs=phi), 1, 0) ## identifies high levels
-top_B <- top_B[,c(1:7,58:61)]
+# Topsoil organic Carbon regressions 
+C.lo <- ggwr(I(C_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
+C.hi <- ggwr(I(C_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
 
-# Topsoil Magnesium predictions
-names(top_Mg)[58:60] <- c("p.5", "p.50", "p.95")
-top_Mg <- reshape(top_Mg, direction="long", varying=58:60, idvar="ssid", v.names="Mg", timevar="plevel") ## long format
-top_Mg$lo <- ifelse(top_Mg$Mg < quantile(ref$Mg, probs=plo), 1, 0) ## identifies low levels
-top_Mg$hi <- ifelse(top_Mg$Mg > quantile(ref$Mg, probs=phi), 1, 0) ## identifies high levels
-top_Mg <- top_Mg[,c(1:7,58:61)]
+# Topsoil total Nitrogen regressions 
+N.lo <- ggwr(I(N_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
+N.hi <- ggwr(I(N_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
 
-# Topsoil Phosphorus predictions
-names(top_P)[58:60] <- c("p.5", "p.50", "p.95")
-top_P <- reshape(top_P, direction="long", varying=58:60, idvar="ssid", v.names="P", timevar="plevel") ## long format
-top_P$lo <- ifelse(top_P$P < quantile(ref$P, probs=plo), 1, 0) ## identifies low levels
-top_P$hi <- ifelse(top_P$P > quantile(ref$P, probs=phi), 1, 0) ## identifies high levels
-top_P <- top_P[,c(1:7,58:61)]
+# Topsoil Boron regressions 
+B.lo <- ggwr(I(B_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
+B.hi <- ggwr(I(B_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
 
-# Topsoil Sulfur predictions
-names(top_S)[58:60] <- c("p.5", "p.50", "p.95")
-top_S <- reshape(top_S, direction="long", varying=58:60, idvar="ssid", v.names="S", timevar="plevel") ## long format
-top_S$lo <- ifelse(top_S$S < quantile(ref$S, probs=plo), 1, 0) ## identifies low levels
-top_S$hi <- ifelse(top_S$S > quantile(ref$S, probs=phi), 1, 0) ## identifies high levels
-top_S <- top_S[,c(1:7,58:61)]
+# Topsoil Magnesium regressions 
+Mg.lo <- ggwr(I(Mg_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
+Mg.hi <- ggwr(I(Mg_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
 
-# Topsoil Potassium predictions
-names(top_K)[58:60] <- c("p.5", "p.50", "p.95")
-top_K <- reshape(top_K, direction="long", varying=58:60, idvar="ssid", v.names="K", timevar="plevel") ## long format
-top_K$lo <- ifelse(top_K$K < quantile(ref$K, probs=plo), 1, 0) ## identifies low levels
-top_K$hi <- ifelse(top_K$K > quantile(ref$K, probs=phi), 1, 0) ## identifies high levels
-top_K <- top_K[,c(1:7,58:61)]
+# Topsoil Phosphorus regressions 
+P.lo <- ggwr(I(P_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
+P.hi <- ggwr(I(P_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
 
-# Topsoil Calcium predictions
-names(top_Ca)[58:60] <- c("p.5", "p.50", "p.95")
-top_Ca <- reshape(top_Ca, direction="long", varying=58:60, idvar="ssid", v.names="Ca", timevar="plevel") ## long format
-top_Ca$lo <- ifelse(top_Ca$Ca < quantile(ref$Ca, probs=plo), 1, 0) ## identifies low levels
-top_Ca$hi <- ifelse(top_Ca$Ca > quantile(ref$Ca, probs=phi), 1, 0) ## identifies high levels
-top_Ca <- top_Ca[,c(1:7,58:61)]
+# Topsoil Sulfur regressions 
+S.lo <- ggwr(I(S_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
+S.hi <- ggwr(I(S_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
 
-# Topsoil Manganese predictions
-names(top_Mn)[58:60] <- c("p.5", "p.50", "p.95")
-top_Mn <- reshape(top_Mn, direction="long", varying=58:60, idvar="ssid", v.names="Mn", timevar="plevel") ## long format
-top_Mn$lo <- ifelse(top_Mn$Mn < quantile(ref$Mn, probs=plo), 1, 0) ## identifies low levels
-top_Mn$hi <- ifelse(top_Mn$Mn > quantile(ref$Mn, probs=phi), 1, 0) ## identifies high levels
-top_Mn <- top_Mn[,c(1:7,58:61)]
+# Topsoil Potassium regressions 
+K.lo <- ggwr(I(K_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
+K.hi <- ggwr(I(K_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
 
-# Topsoil Iron predictions
-names(top_Fe)[58:60] <- c("p.5", "p.50", "p.95")
-top_Fe <- reshape(top_Fe, direction="long", varying=58:60, idvar="ssid", v.names="Fe", timevar="plevel") ## long format
-top_Fe$lo <- ifelse(top_Fe$Fe < quantile(ref$Fe, probs=plo), 1, 0) ## identifies low levels
-top_Fe$hi <- ifelse(top_Fe$Fe > quantile(ref$Fe, probs=phi), 1, 0) ## identifies high levels
-top_Fe <- top_Fe[,c(1:7,58:61)]
+# Topsoil Calcium regressions 
+Ca.lo <- ggwr(I(Ca_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
+Ca.hi <- ggwr(I(Ca_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
 
-# Topsoil Copper predictions
-names(top_Cu)[58:60] <- c("p.5", "p.50", "p.95")
-top_Cu <- reshape(top_Cu, direction="long", varying=58:60, idvar="ssid", v.names="Cu", timevar="plevel") ## long format
-top_Cu$lo <- ifelse(top_Cu$Cu < quantile(ref$Cu, probs=plo), 1, 0) ## identifies low levels
-top_Cu$hi <- ifelse(top_Cu$Cu > quantile(ref$Cu, probs=phi), 1, 0) ## identifies high levels
-top_Cu <- top_Cu[,c(1:7,58:61)]
+# Topsoil Manganese regressions 
+Mn.lo <- ggwr(I(Mn_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
+Mn.hi <- ggwr(I(Mn_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
 
-# Topsoil Zinc predictions
-names(top_Zn)[58:60] <- c("p.5", "p.50", "p.95")
-top_Zn <- reshape(top_Zn, direction="long", varying=58:60, idvar="ssid", v.names="Zn", timevar="plevel") ## long format
-top_Zn$lo <- ifelse(top_Zn$Zn < quantile(ref$Zn, probs=plo), 1, 0) ## identifies low levels
-top_Zn$hi <- ifelse(top_Zn$Zn > quantile(ref$Zn, probs=phi), 1, 0) ## identifies high levels
-top_Zn <- top_Zn[,c(1:7,58:61)]
+# Topsoil Iron regressions 
+Fe.lo <- ggwr(I(Fe_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
+Fe.hi <- ggwr(I(Fe_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
 
-# Topsoil Aluminum predictions
-names(top_Al)[58:60] <- c("p.5", "p.50", "p.95")
-top_Al <- reshape(top_Al, direction="long", varying=58:60, idvar="ssid", v.names="Al", timevar="plevel") ## long format
-top_Al$lo <- ifelse(top_Al$Al < quantile(ref$Al, probs=plo), 1, 0) ## identifies low levels
-top_Al$hi <- ifelse(top_Al$Al > quantile(ref$Al, probs=phi), 1, 0) ## identifies high levels
-top_Al <- top_Al[,c(1:7,58:61)]
+# Topsoil Copper regressions 
+Cu.lo <- ggwr(I(Cu_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
+Cu.hi <- ggwr(I(Cu_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
 
-# Topsoil Sodium predictions
-names(top_Na)[58:60] <- c("p.5", "p.50", "p.95")
-top_Na <- reshape(top_Na, direction="long", varying=58:60, idvar="ssid", v.names="Na", timevar="plevel") ## long format
-top_Na$lo <- ifelse(top_Na$Na < quantile(ref$Na, probs=plo), 1, 0) ## identifies low levels
-top_Na$hi <- ifelse(top_Na$Na > quantile(ref$Na, probs=phi), 1, 0) ## identifies high levels
-top_Na <- top_Na[,c(1:7,58:61)]
+# Topsoil Zinc regressions 
+Zn.lo <- ggwr(I(Zn_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
+Zn.hi <- ggwr(I(Zn_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
 
-# Topsoil exchangeable acidity (Hp) predictions
-names(top_Hp)[58:60] <- c("p.5", "p.50", "p.95")
-top_Hp <- reshape(top_Hp, direction="long", varying=58:60, idvar="ssid", v.names="Hp", timevar="plevel") ## long format
-top_Hp$lo <- ifelse(top_Hp$Hp < quantile(ref$Hp, probs=plo), 1, 0) ## identifies low levels
-top_Hp$hi <- ifelse(top_Hp$Hp > quantile(ref$Hp, probs=phi), 1, 0) ## identifies high levels
-top_Hp <- top_Hp[,c(1:7,58:61)]
+# Topsoil Aluminum regressions 
+Al.lo <- ggwr(I(Al_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
+Al.hi <- ggwr(I(Al_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
 
-# Hi/Lo summaries ---------------------------------------------------------
-# Topsoil pH
-pH_lo <- table(top_pH$plevel, top_pH$lo)
-prop.table(pH_lo,1)*100
-pH_hi <- table(top_pH$plevel, top_pH$hi)
-prop.table(pH_hi,1)*100
+# Topsoil Sodium regressions 
+Na.lo <- ggwr(I(Na_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
+Na.hi <- ggwr(I(Na_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
 
-# Topsoil electrical conductivity (EC)
-EC_lo <- table(top_EC$plevel, top_EC$lo)
-prop.table(EC_lo,1)*100
-EC_hi <- table(top_EC$plevel, top_EC$hi)
-prop.table(EC_hi,1)*100
-
-# Topsoil organic Carbon
-C_lo <- table(top_C$plevel, top_C$lo)
-prop.table(C_lo,1)*100
-C_hi <- table(top_C$plevel, top_C$hi)
-prop.table(C_hi,1)*100
-
-# Topsoil Nitrogen
-N_lo <- table(top_N$plevel, top_N$lo)
-prop.table(N_lo,1)*100
-N_hi <- table(top_N$plevel, top_N$hi)
-prop.table(N_hi,1)*100
-
-# Topsoil Boron
-B_lo <- table(top_B$plevel, top_B$lo)
-prop.table(B_lo,1)*100
-B_hi <- table(top_B$plevel, top_B$hi)
-prop.table(B_hi,1)*100
-
-# Topsoil Magnesium
-Mg_lo <- table(top_Mg$plevel, top_Mg$lo)
-prop.table(Mg_lo,1)*100
-Mg_hi <- table(top_Mg$plevel, top_Mg$hi)
-prop.table(Mg_hi,1)*100
-
-# Topsoil Phosphorus
-P_lo <- table(top_P$plevel, top_P$lo)
-prop.table(P_lo,1)*100
-P_hi <- table(top_P$plevel, top_P$hi)
-prop.table(P_hi,1)*100
-
-# Topsoil Sulfur
-S_lo <- table(top_S$plevel, top_S$lo)
-prop.table(S_lo,1)*100
-S_hi <- table(top_S$plevel, top_S$hi)
-prop.table(S_hi,1)*100
-
-# Topsoil Potassium
-K_lo <- table(top_K$plevel, top_K$lo)
-prop.table(K_lo,1)*100
-K_hi <- table(top_K$plevel, top_K$hi)
-prop.table(K_hi,1)*100
-
-# Topsoil Calcium
-Ca_lo <- table(top_Ca$plevel, top_Ca$lo)
-prop.table(Ca_lo,1)*100
-Ca_hi <- table(top_Ca$plevel, top_Ca$hi)
-prop.table(Ca_hi,1)*100
-
-# Topsoil Manganese
-Mn_lo <- table(top_Mn$plevel, top_Mn$lo)
-prop.table(Mn_lo,1)*100
-Mn_hi <- table(top_Mn$plevel, top_Mn$hi)
-prop.table(Mn_hi,1)*100
-
-# Topsoil Iron
-Fe_lo <- table(top_Fe$plevel, top_Fe$lo)
-prop.table(Fe_lo,1)*100
-Fe_hi <- table(top_Fe$plevel, top_Fe$hi)
-prop.table(Fe_hi,1)*100
-
-# Topsoil Copper
-Cu_lo <- table(top_Cu$plevel, top_Cu$lo)
-prop.table(Cu_lo,1)*100
-Cu_hi <- table(top_Cu$plevel, top_Cu$hi)
-prop.table(Cu_hi,1)*100
-
-# Topsoil Zinc
-Zn_lo <- table(top_Zn$plevel, top_Zn$lo)
-prop.table(Zn_lo,1)*100
-Zn_hi <- table(top_Zn$plevel, top_Zn$hi)
-prop.table(Zn_hi,1)*100
-
-# Topsoil Aluminum
-Al_lo <- table(top_Al$plevel, top_Al$lo)
-prop.table(Al_lo,1)*100
-Al_hi <- table(top_Al$plevel, top_Al$hi)
-prop.table(Al_hi,1)*100
-
-# Topsoil Sodium
-Na_lo <- table(top_Na$plevel, top_Na$lo)
-prop.table(Na_lo,1)*100
-Na_hi <- table(top_Na$plevel, top_Na$hi)
-prop.table(Na_hi,1)*100
-
-# Topsoil exchangeable acidity (Hp)
-Hp_lo <- table(top_Hp$plevel, top_Hp$lo)
-prop.table(Hp_lo,1)*100
-Hp_hi <- table(top_Hp$plevel, top_Hp$hi)
-prop.table(Hp_hi,1)*100
-
-# Write long MIR prediction file ------------------------------------------
-lpred <- cbind(top_pH[,1:9], top_EC["EC"], top_C["C"], top_N["N"], top_B["B"], top_Mg["Mg"], top_P["P"],
-               top_S["S"], top_K["K"], top_Ca["Ca"], top_Mn["Mn"], top_Fe["Fe"], top_Cu["Cu"], top_Zn["Zn"],
-               top_Al["Al"], top_Na["Na"], top_Hp["Hp"])
-write.csv(lpred, "top_MIR_pred_long.csv", row.names=F)
-
+# Topsoil exchangeable acidity (Hp) regressions 
+Hp.lo <- ggwr(I(Hp_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
+Hp.hi <- ggwr(I(Hp_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
