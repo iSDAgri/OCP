@@ -1,4 +1,5 @@
 #' Spatial prediction data setup
+#' GeoSurvey, MobileSurvey & soil data spatial prediction setup 
 #' M. Walsh, December 2016
 
 # install.packages(c("downloader","rgdal","raster"), dependencies=T)
@@ -8,8 +9,8 @@ require(raster)
 
 # Data setup --------------------------------------------------------------
 # Create a data folder in your current working directory
-dir.create("Spatial_data", showWarnings=F)
-setwd("./Spatial_data")
+dir.create("OCP_preds", showWarnings=F)
+setwd("./OCP_preds")
 
 # Download GeoSurvey data
 download("https://www.dropbox.com/s/6gr2s8s7zgj7hr7/GS_CNG_2016.csv.zip?dl=0", "GS_CNG_2016.csv.zip", mode="wb")
@@ -63,8 +64,7 @@ mirgrd <- as.data.frame(mirgrd)
 mir <- cbind(mir, mirgrd)
 mir <- unique(na.omit(mir)) ## includes only unique & complete records
 
-# Train/Test set partitions -----------------------------------------------
-
-
-
-
+# Write files -------------------------------------------------------------
+write.csv(geo, "geo.csv", row.names = F)
+write.csv(mob, "mob.csv", row.names = F)
+write.csv(mir, "mir.csv", row.names = F)
