@@ -1,5 +1,5 @@
 #' Spatial prediction data setup
-#' M. Walsh, July 2016
+#' M. Walsh, December 2016
 
 # install.packages(c("downloader","rgdal","raster"), dependencies=T)
 require(downloader)
@@ -61,7 +61,7 @@ projection(mir) <- projection(grids)
 mirgrd <- extract(grids, mir)
 mirgrd <- as.data.frame(mirgrd)
 mir <- cbind(mir, mirgrd)
-mir <- unique(na.omit(mir))
+mir <- unique(na.omit(mir)) ## includes only unique & complete records
 
 # Train/Test set partitions -----------------------------------------------
 
