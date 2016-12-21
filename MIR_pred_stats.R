@@ -1,7 +1,7 @@
 #' Data summaries of MIR prediction results
 #' M. Walsh, June 2016
 
-# install.packages(c("downloader","compositions"), dependencies=T)
+# install.packages(c("downloader","rgdal","spgwr"), dependencies=T)
 require(downloader)
 require(rgdal)
 require(spgwr)
@@ -76,8 +76,8 @@ top_C$C_hi <- rowSums(top_C[,8:57]> C_hi)
 colnames(top_C)[59] <- "C"
 
 # Topsoil Nitrogen
-N_lo <- quantile(ref$N/10000, probs=0.25)
-N_hi <- quantile(ref$N/10000, probs=0.75)
+N_lo <- 0.1
+N_hi <- 0.5
 top_N <- merge(ssid, N, by="SSN")
 top_N <- top_N[which(top_N$depth=="top"), ]
 top_N <- top_N[!duplicated(top_N[,2]), ]
@@ -86,8 +86,8 @@ top_N$N_hi <- rowSums(top_N[,8:57]> N_hi)
 colnames(top_N)[59] <- "N"
 
 # Topsoil Boron
-B_lo <- quantile(ref$B, probs=0.25)
-B_hi <- quantile(ref$B, probs=0.75)
+B_lo <- 0.5
+B_hi <- 4.0
 top_B <- merge(ssid, B, by="SSN")
 top_B <- top_B[which(top_B$depth=="top"), ]
 top_B <- top_B[!duplicated(top_B[,2]), ]
@@ -106,8 +106,8 @@ top_Mg$Mg_hi <- rowSums(top_Mg[,8:57]> Mg_hi)
 colnames(top_Mg)[59] <- "Mg"
 
 # Topsoil Phosporus
-P_lo <- quantile(ref$P, probs=0.25)
-P_hi <- quantile(ref$P, probs=0.75)
+P_lo <- 15
+P_hi <- 150
 top_P <- merge(ssid, P, by="SSN")
 top_P <- top_P[which(top_P$depth=="top"), ]
 top_P <- top_P[!duplicated(top_P[,2]), ]
@@ -116,8 +116,8 @@ top_P$P_hi <- rowSums(top_P[,8:57]> P_hi)
 colnames(top_P)[59] <- "P"
 
 # Topsoil Sulfur
-S_lo <- quantile(ref$S, probs=0.25)
-S_hi <- quantile(ref$S, probs=0.75)
+S_lo <- 10
+S_hi <- 100
 top_S <- merge(ssid, S, by="SSN")
 top_S <- top_S[which(top_S$depth=="top"), ]
 top_S <- top_S[!duplicated(top_S[,2]), ]
@@ -126,8 +126,8 @@ top_S$S_hi <- rowSums(top_S[,8:57]> S_hi)
 colnames(top_S)[59] <- "S"
 
 # Topsoil Potassium
-K_lo <- quantile(ref$K, probs=0.25)
-K_hi <- quantile(ref$K, probs=0.75)
+K_lo <- 90
+K_hi <- 900
 top_K <- merge(ssid, K, by="SSN")
 top_K <- top_K[which(top_K$depth=="top"), ]
 top_K <- top_K[!duplicated(top_K[,2]), ]
@@ -176,8 +176,8 @@ top_Cu$Cu_hi <- rowSums(top_Cu[,8:57]> Cu_hi)
 colnames(top_Cu)[59] <- "Cu"
 
 # Topsoil Zinc
-Zn_lo <- quantile(ref$Zn, probs=0.25)
-Zn_hi <- quantile(ref$Zn, probs=0.75)
+Zn_lo <- 1
+Zn_hi <- 20
 top_Zn <- merge(ssid, Zn, by="SSN")
 top_Zn <- top_Zn[which(top_Zn$depth=="top"), ]
 top_Zn <- top_Zn[!duplicated(top_Zn[,2]), ]
