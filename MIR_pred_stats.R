@@ -46,8 +46,8 @@ ref <- na.omit(ref) ## omit any missing values
 
 # Topsoil prediction data setup -------------------------------------------
 # Topsoil pH
-pH_lo <- quantile(ref$pH, probs=0.25) ## low reference level
-pH_hi <- quantile(ref$pH, probs=0.75) ## high reference level
+pH_lo <- 5.5 ## low reference level
+pH_hi <- 8.5 ## high reference level
 top_pH <- merge(ssid, pH, by="SSN") ## attaches codebook, lon/lat etc
 top_pH <- top_pH[which(top_pH$depth=="top"), ] 
 top_pH <- top_pH[!duplicated(top_pH[,2]), ]
