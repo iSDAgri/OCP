@@ -221,42 +221,42 @@ plo <- 0.25
 phi <- 0.75
 
 # Topsoil Nitrogen predictions
-plot(ecdf(top_N$N_50), main="", xlab="N (%)", cex.lab=1.4, ylab="CDF", xlim=c(0,0.3), verticals=T, lty=1, lwd=2, col="red", do.points=F, col.01line = NULL)
+plot(ecdf(top_N$N), main="", xlab="N (%)", cex.lab=1.4, ylab="CDF", xlim=c(0,0.3), verticals=T, lty=1, lwd=2, col="red", do.points=F, col.01line = NULL)
 abline(v=quantile(ref$N/10000, probs=plo), h=plo, lty=1, col="grey")
 abline(v=quantile(ref$N/10000, probs=phi), h=phi, lty=1, col="grey")
 plot(ecdf(top_N$p05), add=T, verticals=T, lty=2, lwd=2, col="dark grey", do.points=F, col.01line = NULL)
 plot(ecdf(top_N$p95), add=T, verticals=T, lty=2, lwd=2, col="dark grey", do.points=F, col.01line = NULL)
 
 # Topsoil Phosphorus predictions
-plot(ecdf(top_P$P_50), main="", xlab="P (ppm)", cex.lab=1.4, ylab="CDF", xlim=c(0,40), verticals=T, lty=1, lwd=2, col="red", do.points=F, col.01line = NULL)
+plot(ecdf(top_P$P), main="", xlab="P (ppm)", cex.lab=1.4, ylab="CDF", xlim=c(0,40), verticals=T, lty=1, lwd=2, col="red", do.points=F, col.01line = NULL)
 abline(v=quantile(ref$P, probs=plo), h=plo, lty=1, col="grey")
 abline(v=quantile(ref$P, probs=phi), h=phi, lty=1, col="grey")
 plot(ecdf(top_P$p05), add=T, verticals=T, lty=1, lwd=2, col="dark grey", do.points=F, col.01line = NULL)
 plot(ecdf(top_P$p95), add=T, verticals=T, lty=1, lwd=2, col="dark grey", do.points=F, col.01line = NULL)
 
 # Topsoil Potassium predictions
-plot(ecdf(top_K$K_50), main="", xlab="K (ppm)", cex.lab=1.4, ylab="CDF", xlim=c(0,300), verticals=T, lty=1, lwd=2, col="red", do.points=F, col.01line = NULL)
+plot(ecdf(top_K$K), main="", xlab="K (ppm)", cex.lab=1.4, ylab="CDF", xlim=c(0,300), verticals=T, lty=1, lwd=2, col="red", do.points=F, col.01line = NULL)
 abline(v=quantile(ref$K, probs=plo), h=plo, lty=1, col="grey")
 abline(v=quantile(ref$K, probs=phi), h=phi, lty=1, col="grey")
 plot(ecdf(top_K$p05), add=T, verticals=T, lty=1, lwd=2, col="dark grey", do.points=F, col.01line = NULL)
 plot(ecdf(top_K$p95), add=T, verticals=T, lty=1, lwd=2, col="dark grey", do.points=F, col.01line = NULL)
 
 # Topsoil Sulfur predictions
-plot(ecdf(top_S$S_50), main="", xlab="S (ppm)", cex.lab=1.4, ylab="CDF", xlim=c(0,40), verticals=T, lty=1, lwd=2, col="red", do.points=F, col.01line = NULL)
+plot(ecdf(top_S$S), main="", xlab="S (ppm)", cex.lab=1.4, ylab="CDF", xlim=c(0,40), verticals=T, lty=1, lwd=2, col="red", do.points=F, col.01line = NULL)
 abline(v=quantile(ref$S, probs=plo), h=plo, lty=1, col="grey")
 abline(v=quantile(ref$S, probs=phi), h=phi, lty=1, col="grey")
 plot(ecdf(top_S$p05), add=T, verticals=T, lty=1, lwd=2, col="dark grey", do.points=F, col.01line = NULL)
 plot(ecdf(top_S$p95), add=T, verticals=T, lty=1, lwd=2, col="dark grey", do.points=F, col.01line = NULL)
 
 # Topsoil Boron predictions
-plot(ecdf(top_B$B_50), main="", xlab="B (ppm)", cex.lab=1.4, ylab="CDF", xlim=c(0,1), verticals=T, lty=1, lwd=2, col="red", do.points=F, col.01line = NULL)
+plot(ecdf(top_B$B), main="", xlab="B (ppm)", cex.lab=1.4, ylab="CDF", xlim=c(0,1), verticals=T, lty=1, lwd=2, col="red", do.points=F, col.01line = NULL)
 abline(v=quantile(ref$B, probs=plo), h=plo, lty=1, col="grey")
 abline(v=quantile(ref$B, probs=phi), h=phi, lty=1, col="grey")
 plot(ecdf(top_B$p05), add=T, verticals=T, lty=1, lwd=2, col="dark grey", do.points=F, col.01line = NULL)
 plot(ecdf(top_B$p95), add=T, verticals=T, lty=1, lwd=2, col="dark grey", do.points=F, col.01line = NULL)
 
 # Topsoil Zinc predictions
-plot(ecdf(top_Zn$Zn_50), main="", xlab="Zn (ppm)", cex.lab=1.4, ylab="CDF", xlim=c(0,4), verticals=T, lty=1, lwd=2, col="red", do.points=F, col.01line = NULL)
+plot(ecdf(top_Zn$Zn), main="", xlab="Zn (ppm)", cex.lab=1.4, ylab="CDF", xlim=c(0,4), verticals=T, lty=1, lwd=2, col="red", do.points=F, col.01line = NULL)
 abline(v=quantile(ref$Zn, probs=plo), h=plo, lty=1, col="grey")
 abline(v=quantile(ref$Zn, probs=phi), h=phi, lty=1, col="grey")
 plot(ecdf(top_Zn$p05), add=T, verticals=T, lty=1, lwd=2, col="dark grey", do.points=F, col.01line = NULL)
