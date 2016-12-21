@@ -23,7 +23,7 @@ unzip("MS_CNG_2016.csv.zip", overwrite=T)
 mob <- read.table("MS_CNG_2016.csv", header=T, sep=",")
 
 # Download MIR prediction data
-download("https://www.dropbox.com/s/kjm69pdsdc21hxg/Top_MIR_pred.csv.zip?dl=0", "Top_MIR_pred.csv.zip", mode="wb")
+download("https://www.dropbox.com/s/i7e1f3ghy4dw2z7/Top_MIR_pred.csv.zip?dl=0", "Top_MIR_pred.csv.zip", mode="wb")
 unzip("Top_MIR_pred.csv.zip", overwrite=T)
 mir <- read.table("Top_MIR_pred.csv", header=T, sep=",")
 
