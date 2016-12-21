@@ -1,5 +1,5 @@
 #' Spatial prediction data setup
-#' GeoSurvey, MobileSurvey & soil data spatial prediction setup 
+#' Central Nigeria GeoSurvey, MobileSurvey & soil data spatial prediction setup 
 #' M. Walsh, December 2016
 
 # install.packages(c("downloader","rgdal","raster"), dependencies=T)
