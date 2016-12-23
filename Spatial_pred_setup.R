@@ -9,8 +9,8 @@ require(raster)
 
 # Data setup --------------------------------------------------------------
 # Create a data folder in your current working directory
-dir.create("OCP_preds", showWarnings=F)
-setwd("./OCP_preds")
+dir.create("Map_preds", showWarnings=F)
+setwd("./Map_preds")
 
 # Download GeoSurvey data
 download("https://www.dropbox.com/s/6gr2s8s7zgj7hr7/GS_CNG_2016.csv.zip?dl=0", "GS_CNG_2016.csv.zip", mode="wb")
