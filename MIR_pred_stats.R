@@ -4,6 +4,7 @@
 # install.packages(c("downloader","rgdal","spgwr"), dependencies=T)
 require(downloader)
 require(rgdal)
+require(proj4)
 require(spgwr)
 
 # Data setup --------------------------------------------------------------
@@ -277,7 +278,7 @@ colnames(mirpred.proj) <- c("x","y") ## laea coordinates
 mirpred <- cbind(mirpred, mirpred.proj)
 write.csv(mirpred, "Top_MIR_pred.csv", row.names = F)
 coordinates(mirpred) <- ~x+y
-crs(mirpred) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
+proj4string(mirpred) <- CRS("+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs")
 
 # Topsoil pH regressions 
 pH.lo <- ggwr(I(pH_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
