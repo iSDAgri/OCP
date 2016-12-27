@@ -1,11 +1,11 @@
 #' Data summaries of MIR prediction results
 #' M. Walsh, June 2016
 
-# install.packages(c("downloader","rgdal","spgwr"), dependencies=T)
+# install.packages(c("downloader","rgdal","MASS","arm"), dependencies=T)
 require(downloader)
 require(rgdal)
-require(proj4)
-require(spgwr)
+require(MASS)
+require(arm)
 
 # Data setup --------------------------------------------------------------
 # Create a data folder in your current working directory
@@ -265,8 +265,7 @@ plot(ecdf(top_Zn$p95), add=T, verticals=T, lty=1, lwd=2, col="dark grey", do.poi
 
 par(mfrow=c(1,1))
 
-# Geographically weighted regressions -------------------------------------
-# Data setup
+# Write file --------------------------------------------------------------
 mirpred <- cbind(top_pH[c(1:7,59,61:62)], top_EC[c(59,61:62)], top_C[c(59,61:62)], top_N[c(59,61:62)], top_B[c(59,61:62)],
                  top_Mg[c(59,61:62)], top_P[c(59,61:62)], top_S[c(59,61:62)], top_K[c(59,61:62)], top_Ca[c(59,61:62)], 
                  top_Mn[c(59,61:62)], top_Fe[c(59,61:62)], top_Cu[c(59,61:62)], top_Zn[c(59,61:62)], top_Al[c(59,61:62)],
@@ -277,74 +276,6 @@ mirpred.proj <- as.data.frame(project(cbind(mirpred$lon, mirpred$lat), "+proj=la
 colnames(mirpred.proj) <- c("x","y") ## laea coordinates
 mirpred <- cbind(mirpred, mirpred.proj)
 write.csv(mirpred, "Top_MIR_pred.csv", row.names = F)
-coordinates(mirpred) <- ~x+y
-proj4string(mirpred) <- CRS("+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs")
 
-# Topsoil pH regressions 
-pH.lo <- ggwr(I(pH_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-res <- as.data.frame(pH.lo$SDF)
-pH.hi <- ggwr(I(pH_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
 
-# Topsoil electrical conductivity (EC) regressions 
-EC.lo <- ggwr(I(EC_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-EC.hi <- ggwr(I(EC_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
 
-# Topsoil organic Carbon regressions 
-C.lo <- ggwr(I(C_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-C.hi <- ggwr(I(C_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-
-# Topsoil total Nitrogen regressions 
-N.lo <- ggwr(I(N_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-N.hi <- ggwr(I(N_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-
-# Topsoil Boron regressions 
-B.lo <- ggwr(I(B_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-B.hi <- ggwr(I(B_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-
-# Topsoil Magnesium regressions 
-Mg.lo <- ggwr(I(Mg_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-Mg.hi <- ggwr(I(Mg_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-
-# Topsoil Phosphorus regressions 
-P.lo <- ggwr(I(P_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-P.hi <- ggwr(I(P_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-
-# Topsoil Sulfur regressions 
-S.lo <- ggwr(I(S_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-S.hi <- ggwr(I(S_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-
-# Topsoil Potassium regressions 
-K.lo <- ggwr(I(K_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-K.hi <- ggwr(I(K_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-
-# Topsoil Calcium regressions 
-Ca.lo <- ggwr(I(Ca_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-Ca.hi <- ggwr(I(Ca_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-
-# Topsoil Manganese regressions 
-Mn.lo <- ggwr(I(Mn_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-Mn.hi <- ggwr(I(Mn_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-
-# Topsoil Iron regressions 
-Fe.lo <- ggwr(I(Fe_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-Fe.hi <- ggwr(I(Fe_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-
-# Topsoil Copper regressions 
-Cu.lo <- ggwr(I(Cu_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-Cu.hi <- ggwr(I(Cu_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-
-# Topsoil Zinc regressions 
-Zn.lo <- ggwr(I(Zn_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-Zn.hi <- ggwr(I(Zn_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-
-# Topsoil Aluminum regressions 
-Al.lo <- ggwr(I(Al_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-Al.hi <- ggwr(I(Al_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-
-# Topsoil Sodium regressions 
-Na.lo <- ggwr(I(Na_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-Na.hi <- ggwr(I(Na_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-
-# Topsoil exchangeable acidity (Hp) regressions 
-Hp.lo <- ggwr(I(Hp_lo/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
-Hp.hi <- ggwr(I(Hp_hi/50)~1, family=binomial(link="logit"), data=mirpred, bandwidth=5000)
