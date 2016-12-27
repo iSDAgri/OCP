@@ -1,11 +1,9 @@
 #' Data summaries of MIR prediction results
 #' M. Walsh, June 2016
 
-# install.packages(c("downloader","rgdal","MASS","arm"), dependencies=T)
+# install.packages(c("downloader","rgdal"), dependencies=T)
 require(downloader)
 require(rgdal)
-require(MASS)
-require(arm)
 
 # Data setup --------------------------------------------------------------
 # Create a data folder in your current working directory
@@ -33,7 +31,7 @@ Al <- read.table("Al_pred.csv", header=T, sep=",")
 Na <- read.table("Na_pred.csv", header=T, sep=",")
 Hp <- read.table("Hp_pred.csv", header=T, sep=",")
 
-# Sample ID codebook
+# IITA Sample ID codebook
 iita <- read.table("IITA_codebook.csv", header=T, sep=",")
 ssid <- read.table("OCP_SSID.csv", header=T, sep=",")
 ssid <- merge(ssid, iita, by="ssid")
@@ -57,8 +55,8 @@ top_pH$pH_hi <- rowSums(top_pH[,8:57]> pH_hi) ## calculates number of MCMC draws
 colnames(top_pH)[59] <- "pH"
 
 # Topsoil electrical conductivity (EC)
-EC_lo <- quantile(ref$EC*1000, probs=0.25)
-EC_hi <- quantile(ref$EC*1000, probs=0.75)
+EC_lo <- quantile(ref$EC*1000, probs=0.25) ## low reference level
+EC_hi <- quantile(ref$EC*1000, probs=0.75) ## high reference level
 top_EC <- merge(ssid, EC, by="SSN")
 top_EC <- top_EC[which(top_EC$depth=="top"), ]
 top_EC <- top_EC[!duplicated(top_EC[,2]), ]
@@ -67,8 +65,8 @@ top_EC$EC_hi <- rowSums(top_EC[,8:57]> EC_hi)
 colnames(top_EC)[59] <- "EC"
 
 # Topsoil organic Carbon
-C_lo <- quantile(ref$C/10000, probs=0.25)
-C_hi <- quantile(ref$C/10000, probs=0.75)
+C_lo <- quantile(ref$C/10000, probs=0.25) ## low reference level
+C_hi <- quantile(ref$C/10000, probs=0.75) ## high reference level
 top_C <- merge(ssid, C, by="SSN")
 top_C <- top_C[which(top_C$depth=="top"), ]
 top_C <- top_C[!duplicated(top_C[,2]), ]
@@ -77,8 +75,8 @@ top_C$C_hi <- rowSums(top_C[,8:57]> C_hi)
 colnames(top_C)[59] <- "C"
 
 # Topsoil Nitrogen
-N_lo <- 0.1
-N_hi <- 0.5
+N_lo <- 0.1 ## low reference level
+N_hi <- 0.5 ## high reference level
 top_N <- merge(ssid, N, by="SSN")
 top_N <- top_N[which(top_N$depth=="top"), ]
 top_N <- top_N[!duplicated(top_N[,2]), ]
@@ -87,8 +85,8 @@ top_N$N_hi <- rowSums(top_N[,8:57]> N_hi)
 colnames(top_N)[59] <- "N"
 
 # Topsoil Boron
-B_lo <- 0.5
-B_hi <- 4.0
+B_lo <- 0.5 ## low reference level
+B_hi <- 4.0 ## high reference level
 top_B <- merge(ssid, B, by="SSN")
 top_B <- top_B[which(top_B$depth=="top"), ]
 top_B <- top_B[!duplicated(top_B[,2]), ]
@@ -97,8 +95,8 @@ top_B$B_hi <- rowSums(top_B[,8:57]> B_hi)
 colnames(top_B)[59] <- "B"
 
 # Topsoil Magnesium
-Mg_lo <- quantile(ref$Mg, probs=0.25)
-Mg_hi <- quantile(ref$Mg, probs=0.75)
+Mg_lo <- quantile(ref$Mg, probs=0.25) ## low reference level
+Mg_hi <- quantile(ref$Mg, probs=0.75) ## high reference level
 top_Mg <- merge(ssid, Mg, by="SSN")
 top_Mg <- top_Mg[which(top_Mg$depth=="top"), ]
 top_Mg <- top_Mg[!duplicated(top_Mg[,2]), ]
@@ -107,8 +105,8 @@ top_Mg$Mg_hi <- rowSums(top_Mg[,8:57]> Mg_hi)
 colnames(top_Mg)[59] <- "Mg"
 
 # Topsoil Phosporus
-P_lo <- 15
-P_hi <- 150
+P_lo <- 15 ## low reference level
+P_hi <- 150 ## high reference level
 top_P <- merge(ssid, P, by="SSN")
 top_P <- top_P[which(top_P$depth=="top"), ]
 top_P <- top_P[!duplicated(top_P[,2]), ]
@@ -117,8 +115,8 @@ top_P$P_hi <- rowSums(top_P[,8:57]> P_hi)
 colnames(top_P)[59] <- "P"
 
 # Topsoil Sulfur
-S_lo <- 10
-S_hi <- 100
+S_lo <- 10 ## low reference level
+S_hi <- 100 ## high reference level
 top_S <- merge(ssid, S, by="SSN")
 top_S <- top_S[which(top_S$depth=="top"), ]
 top_S <- top_S[!duplicated(top_S[,2]), ]
@@ -127,8 +125,8 @@ top_S$S_hi <- rowSums(top_S[,8:57]> S_hi)
 colnames(top_S)[59] <- "S"
 
 # Topsoil Potassium
-K_lo <- 90
-K_hi <- 900
+K_lo <- 90 ## low reference level
+K_hi <- 900 ## high reference level
 top_K <- merge(ssid, K, by="SSN")
 top_K <- top_K[which(top_K$depth=="top"), ]
 top_K <- top_K[!duplicated(top_K[,2]), ]
@@ -137,8 +135,8 @@ top_K$K_hi <- rowSums(top_K[,8:57]> K_hi)
 colnames(top_K)[59] <- "K"
 
 # Topsoil Calcium
-Ca_lo <- quantile(ref$Ca, probs=0.25)
-Ca_hi <- quantile(ref$Ca, probs=0.75)
+Ca_lo <- quantile(ref$Ca, probs=0.25) ## low reference level
+Ca_hi <- quantile(ref$Ca, probs=0.75) ## high reference level
 top_Ca <- merge(ssid, Ca, by="SSN")
 top_Ca <- top_Ca[which(top_Ca$depth=="top"), ]
 top_Ca <- top_Ca[!duplicated(top_Ca[,2]), ]
@@ -147,8 +145,8 @@ top_Ca$Ca_hi <- rowSums(top_Ca[,8:57]> Ca_hi)
 colnames(top_Ca)[59] <- "Ca"
 
 # Topsoil Manganese
-Mn_lo <- quantile(ref$Mn, probs=0.25)
-Mn_hi <- quantile(ref$Mn, probs=0.75)
+Mn_lo <- quantile(ref$Mn, probs=0.25) ## low reference level
+Mn_hi <- quantile(ref$Mn, probs=0.75) ## high reference level
 top_Mn <- merge(ssid, Mn, by="SSN")
 top_Mn <- top_Mn[which(top_Mn$depth=="top"), ]
 top_Mn <- top_Mn[!duplicated(top_Mn[,2]), ]
@@ -157,8 +155,8 @@ top_Mn$Mn_hi <- rowSums(top_Mn[,8:57]> Mn_hi)
 colnames(top_Mn)[59] <- "Mn"
 
 # Topsoil Iron
-Fe_lo <- quantile(ref$Fe, probs=0.25)
-Fe_hi <- quantile(ref$Fe, probs=0.75)
+Fe_lo <- quantile(ref$Fe, probs=0.25) ## low reference level
+Fe_hi <- quantile(ref$Fe, probs=0.75) ## high reference level
 top_Fe <- merge(ssid, Fe, by="SSN")
 top_Fe <- top_Fe[which(top_Fe$depth=="top"), ]
 top_Fe <- top_Fe[!duplicated(top_Fe[,2]), ]
@@ -167,8 +165,8 @@ top_Fe$Fe_hi <- rowSums(top_Fe[,8:57]> Fe_hi)
 colnames(top_Fe)[59] <- "Fe"
 
 # Topsoil Copper
-Cu_lo <- quantile(ref$Cu, probs=0.25)
-Cu_hi <- quantile(ref$Cu, probs=0.75)
+Cu_lo <- quantile(ref$Cu, probs=0.25) ## low reference level
+Cu_hi <- quantile(ref$Cu, probs=0.75) ## high reference level
 top_Cu <- merge(ssid, Cu, by="SSN")
 top_Cu <- top_Cu[which(top_Cu$depth=="top"), ]
 top_Cu <- top_Cu[!duplicated(top_Cu[,2]), ]
@@ -177,8 +175,8 @@ top_Cu$Cu_hi <- rowSums(top_Cu[,8:57]> Cu_hi)
 colnames(top_Cu)[59] <- "Cu"
 
 # Topsoil Zinc
-Zn_lo <- 1
-Zn_hi <- 20
+Zn_lo <- 1 ## low reference level
+Zn_hi <- 20 ## high reference level
 top_Zn <- merge(ssid, Zn, by="SSN")
 top_Zn <- top_Zn[which(top_Zn$depth=="top"), ]
 top_Zn <- top_Zn[!duplicated(top_Zn[,2]), ]
@@ -187,8 +185,8 @@ top_Zn$Zn_hi <- rowSums(top_Zn[,8:57]> Zn_hi)
 colnames(top_Zn)[59] <- "Zn"
 
 # Topsoil Aluminum
-Al_lo <- quantile(ref$Al, probs=0.25)
-Al_hi <- quantile(ref$Al, probs=0.75)
+Al_lo <- quantile(ref$Al, probs=0.25) ## low reference level
+Al_hi <- quantile(ref$Al, probs=0.75) ## high reference level
 top_Al <- merge(ssid, Al, by="SSN")
 top_Al <- top_Al[which(top_Al$depth=="top"), ]
 top_Al <- top_Al[!duplicated(top_Al[,2]), ]
@@ -197,8 +195,8 @@ top_Al$Al_hi <- rowSums(top_Al[,8:57]> Al_hi)
 colnames(top_Al)[59] <- "Al"
 
 # Topsoil Sodium
-Na_lo <- quantile(ref$Na, probs=0.25)
-Na_hi <- quantile(ref$Na, probs=0.75)
+Na_lo <- quantile(ref$Na, probs=0.25) ## low reference level
+Na_hi <- quantile(ref$Na, probs=0.75) ## high reference level
 top_Na <- merge(ssid, Na, by="SSN")
 top_Na <- top_Na[which(top_Na$depth=="top"), ]
 top_Na <- top_Na[!duplicated(top_Na[,2]), ]
@@ -207,8 +205,8 @@ top_Na$Na_hi <- rowSums(top_Na[,8:57]> Na_hi)
 colnames(top_Na)[59] <- "Na"
 
 # Topsoil exchangeable acidity (Hp)
-Hp_lo <- quantile(ref$Hp, probs=0.25)
-Hp_hi <- quantile(ref$Hp, probs=0.75)
+Hp_lo <- quantile(ref$Hp, probs=0.25) ## low reference level
+Hp_hi <- quantile(ref$Hp, probs=0.75) ## high reference level
 top_Hp <- merge(ssid, Hp, by="SSN")
 top_Hp <- top_Hp[which(top_Hp$depth=="top"), ]
 top_Hp <- top_Hp[!duplicated(top_Hp[,2]), ]
