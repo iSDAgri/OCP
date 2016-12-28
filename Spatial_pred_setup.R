@@ -66,8 +66,12 @@ projection(nut) <- projection(grids)
 nutgrd <- extract(grids, nut)
 nutgrd <- as.data.frame(nutgrd)
 nut <- cbind(nut, nutgrd)
+nut <- unique(na.omit(nut)) ## includes only unique & complete records
 
 # Write files -------------------------------------------------------------
 write.csv(geo, "geo.csv", row.names = F)
 write.csv(mob, "mob.csv", row.names = F)
 write.csv(nut, "nut.csv", row.names = F)
+
+# remove extraneous objects from memory
+rm(list=setdiff(ls(), c("geo", "mob", "nut", "grids")))
