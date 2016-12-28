@@ -3,9 +3,11 @@
 #' M. Walsh, December 2016
 
 # install.packages(c("downloader","rgdal","raster"), dependencies=T)
-require(downloader)
-require(rgdal)
-require(raster)
+suppressPackageStartupMessages({
+  require(downloader)
+  require(rgdal)
+  require(raster)
+})
 
 # Data setup --------------------------------------------------------------
 # Create a data folder in your current working directory
@@ -57,14 +59,15 @@ mob <- cbind.data.frame(mob, mobgrd)
 mob <- unique(na.omit(mob)) ## includes only unique & complete records
 
 # Extract grids at MIR locations
-coordinates(mir) <- ~x+y
-projection(mir) <- projection(grids)
-mirgrd <- extract(grids, mir)
-mirgrd <- as.data.frame(mirgrd)
-mir <- cbind(mir, mirgrd)
-mir <- unique(na.omit(mir)) ## includes only unique & complete records
+mirvars <- c("ssid","x","y","N","P","K","S","B","Zn") ## select variables
+nut <- mir[mirvars]
+coordinates(nut) <- ~x+y
+projection(nut) <- projection(grids)
+nutgrd <- extract(grids, nut)
+nutgrd <- as.data.frame(nutgrd)
+nut <- cbind(nut, nutgrd)
 
 # Write files -------------------------------------------------------------
 write.csv(geo, "geo.csv", row.names = F)
 write.csv(mob, "mob.csv", row.names = F)
-write.csv(mir, "mir.csv", row.names = F)
+write.csv(nut, "nut.csv", row.names = F)
