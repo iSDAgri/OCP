@@ -11,8 +11,7 @@ suppressPackageStartupMessages({
   require(raster)
   require(randomForest)
   require(gbm)
-  require(nnet)
-  require(bartMachine)
+  require(deepnet)
   require(glmnet)
 })
 
@@ -41,12 +40,12 @@ nut$dB <- 2*nut$BD20*nut$B-2*nut$BD20*rB
 nut$dZn <- 2*nut$BD20*nut$Zn-2*nut$BD20*rZn
 
 # Variable setup
-y <- nut$dP ## set nutrient to be predicted here
-x <- nut[,11:50] ## set features here
+l <- nut$dP ## set labels (y-variable) here
+f <- nut[,11:50] ## set features (x-varibales) here
 
 # bartMachine model -------------------------------------------------------
-# options(java.parameters = "-Xmx2500M")
-# set_bart_machine_num_cores(4)
+options(java.parameters = "-Xmx8g")
+library(bartMachine)
 
 # Start doParallel to parallelize model fitting
 mc <- makeCluster(detectCores())
@@ -55,7 +54,7 @@ registerDoParallel(mc)
 # Model setup
 set.seed(1385321)
 tc <- trainControl(method = "cv", allowParallel = T)
-bar <- train(x, y,
+bar <- train(f, l,
              method = "bartMachine", 
              preProc = c("center", "scale"), 
              trControl = tc,
@@ -65,7 +64,6 @@ bar <- train(x, y,
 print(bar)
 bar_pred <- predict(grids, bar)
 rm("bar")
-
 stopCluster(mc)
 
 # RF model ----------------------------------------------------------------
@@ -77,7 +75,7 @@ registerDoParallel(mc)
 set.seed(1385321)
 tc <- trainControl(method = "cv")
 tg <- expand.grid(mtry=seq(2, 10, by=1))
-rfo <- train(x, y,
+rfo <- train(f, l,
              preProc = c("center", "scale"),
              method = "rf",
              ntree = 501,
@@ -86,7 +84,6 @@ rfo <- train(x, y,
 print(rfo)
 rfo_pred <- predict(grids, rfo) ## predict map
 rm("rfo")
-
 stopCluster(mc)
 
 # GBM model ---------------------------------------------------------------
@@ -101,7 +98,7 @@ tg <- expand.grid(.n.trees=seq(10, 200, by=5),
                   .interaction.depth = 5,
                   .shrinkage = 0.1,
                   .n.minobsinnode = 10)
-gbm <- train(x, y, 
+gbm <- train(f, l, 
              method = "gbm", 
              preProc = c("center", "scale"),
              trControl = tc,
@@ -109,10 +106,9 @@ gbm <- train(x, y,
 print(gbm)
 gbm_pred <- predict(grids, gbm) ## predict map
 rm("gbm")
-
 stopCluster(mc)
 
-# NNET models -------------------------------------------------------------
+# DNET model -------------------------------------------------------------
 # Start doParallel to parallelize model fitting
 mc <- makeCluster(detectCores())
 registerDoParallel(mc)
@@ -121,11 +117,11 @@ registerDoParallel(mc)
 set.seed(1385321)
 tc <- trainControl(method = "cv")
 tg <- expand.grid(layer1 = 2:10,
-                  layer2 = 0,
-                  layer3 = 0,
+                  layer2 = 0:3,
+                  layer3 = 0:3,
                   hidden_dropout = 0,
                   visible_dropout = 0)
-net <- train(x, y, 
+net <- train(f, l, 
              method = "dnn", 
              preProc = c("center", "scale"), 
              trControl = tc,
@@ -133,19 +129,13 @@ net <- train(x, y,
 print(net)
 net_pred <- predict(grids, net) ## predict map
 rm("net")
-
 stopCluster(mc)
 
 # Model stacking setup ----------------------------------------------------
-pwetv <- as.data.frame(cbind(rfo_wet, gbm_wet, dnn_wet, bar_wet))
-names(pwetv) <- c("L", "RFO", "GBM", "NNET", "BART")
+mod_grd <- stack("rfo_pred", "gbm_pred", "net_pred", "bar_pred")
 
-# Write data files --------------------------------------------------------
-write.csv(pwetv, "pwetv.csv", row.names=F)
-write.csv(pmirv, "pmirv.csv", row.names=F)
-
-# Remove extraneous objects from memory -----------------------------------
-# rm(list=setdiff(ls(), c("pwetv", "pmirv")))
+# Remove extraneous objects from memory
+# rm(list=setdiff(ls(), c("")))
 
 # Model stacking ----------------------------------------------------------
 # Start doParallel to parallelize model fitting
@@ -154,16 +144,12 @@ registerDoParallel(mc)
 
 # Model setup
 set.seed(1385321)
-tc <- trainControl(method = "cv", classProbs = TRUE, summaryFunction = twoClassSummary,
-                   allowParallel = T)
+tc <- trainControl(method = "cv", allowParallel = T)
 wet.ens <- train(HL ~ ., data = pwetv,
                  method = "glmnet",
-                 family = "binomial",
-                 metric = "ROC",
                  trControl = tc)
 print(wet.ens)
 wet.imp <- varImp(wet.ens)
 plot(wet.imp, top=4, col="black", cex=1.2, xlab="Model importance in ensemble prediction")
 ens_wet <- predict(wet.ens, pwetv, type = "prob")
-
 stopCluster(mc)
