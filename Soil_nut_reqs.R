@@ -27,7 +27,7 @@ oP <- 2.2913 ## P to P2O5
 oK <- 1.2046 ## K to K2O
 
 # Nutrient mass estimates (kg/ha) in delta notation relative to specified reference levels
-req$dN <- 2*req$BD20*req$N*10000-2*req$BD20*rN ## convert from % to ppm
+req$dN <- 2*req$BD20*req$N*10000-2*req$BD20*rN ## convert to ppm
 req$dP <- 2*req$BD20*req$P*oP-2*req$BD20*rP ## in P2O5 oxide equivalents
 req$dK <- 2*req$BD20*req$K*oK-2*req$BD20*rK ## in K2O oxide equivalents
 req$dS <- 2*req$BD20*req$S-2*req$BD20*rS
