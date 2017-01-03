@@ -68,7 +68,7 @@ nut <- cbind(nut, nutgrd)
 nut <- unique(na.omit(nut)) ## includes only unique & complete records
 
 # extract variables for nutrient requirement summaries
-reqvars <- c("ssid","x","y","N","P","K","S","B","Zn","BD20")
+reqvars <- c("ssid","x","y","P","K","S","B","Zn","BD20")
 req <- nut[reqvars]
 
 # Write files -------------------------------------------------------------
