@@ -5,14 +5,15 @@
 # install.packages(c("devtools","leaderCluster","MASS","arm")), dependencies=TRUE)
 suppressPackageStartupMessages({
   require(devtools)
-  require(leaderCluster)
-  require(MASS)
   require(arm)
 })
 
 # Data setup --------------------------------------------------------------
 # SourceURL <- "https://raw.githubusercontent.com/mgwalsh/OCP/blob/master/Spatial_pred_setup.R"
 # source_url(SourceURL)
+
+LGA <- read.table("LGA_ID.csv", header=T, sep=",")
+req <- merge(req, LGA, by="LGA_ID")
 
 # Nutrient sufficiency reference levels (in ppm)
 rP <- 30
@@ -32,14 +33,9 @@ req$dS <- 2*req$BD20*req$S-2*req$BD20*rS
 req$dB <- 2*req$BD20*req$B-2*req$BD20*rB
 req$dZn <- 2*req$BD20*req$Zn-2*req$BD20*rZn
 
-# generate site IDs
-loc <- as.matrix(req[,2:3])
-sid <- leaderCluster(loc, radius=12000, distance="L2")$cluster_id
-req <- cbind(req, sid)
-
 # LMER summaries ----------------------------------------------------------
 # delta P (kg/ha) relative to specified (P2O5) reference level
-dP <- lmer(dP~1+(1|sid), data=req)
+dP <- lmer(dP~1+(1|LGA_name), data=req)
 display(dP)
 
 # delta K (kg/ha) relative to specified (K2O) reference level
