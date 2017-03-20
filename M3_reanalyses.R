@@ -1,4 +1,4 @@
-#' Mehlich-3 (M3) data checks by comparison to CNLS reanalyses
+#' Mehlich-3 (M3) IITA lab data checks by comparison to CNLS reanalyses
 #' M. Walsh, March 2017
 
 # install.packages(c("downloader","compositions"), dependencies=T)
@@ -26,7 +26,9 @@ cnlsr$Ca <- cnlsr$ExCa * 200 ## ExCa conversion to ppm
 cnlsr$Mg <- cnlsr$ExMg * 120 ## ExMg conversion to ppm
 cnlsr$K  <- cnlsr$ExK * 391  ## ExK conversion to ppm
 
+iita1 <- iita1[c(1,5,7,6,8,4,3,9,11,12,10)]
 iita2 <- iita2[c(1,5,7,6,8,4,3,9,11,12,10)]
+iitar <- merge(iita1, iita2, by="SSID")
 cnlsr <- cnlsr[c(3,10,23,11,21:22,6,9,7,12,8)]
 names(cnlsr) <- c("SSID","P","K","S","Ca","Mg","B","Mn","Cu","Zn","Fe")
 compr <- merge(cnlsr, iita2, by="SSID")
@@ -69,4 +71,19 @@ plot(Mg.y~Mg.x, cex=1.2, xlab=expression(paste("Mg"[r], " (ppm)")), ylab=express
 abline(0,1)
 plot(Fe.y~Fe.x, cex=1.2, xlab=expression(paste("Fe"[r], " (ppm)")), ylab=expression(paste("Fe"[s], " (ppm)")), 
      cex.lab=1.5, xlim=c(0, max(compr$Fe.x)), ylim= c(0, max(compr$Fe.x)), compr)
+abline(0,1)
+
+# Within IITA lab reps P,K,S & Fe 
+par(mfrow=c(2,2), mar=c(5,5,1,1))
+plot(P.y~P.x, cex=1.2, xlab=expression(paste("P"[r], " (ppm)")), ylab=expression(paste("P"[s], " (ppm)")), 
+     cex.lab=1.5, xlim=c(0, max(compr$P.x)), ylim= c(0, max(compr$P.x)), iitar)
+abline(0,1)
+plot(K.y~K.x, cex=1.2, xlab=expression(paste("K"[r], " (ppm)")), ylab=expression(paste("K"[s], " (ppm)")), 
+     cex.lab=1.5, xlim=c(0, max(compr$K.x)), ylim= c(0, max(compr$K.x)), iitar)
+abline(0,1)
+plot(S.y~S.x, cex=1.2, xlab=expression(paste("S"[r], " (ppm)")), ylab=expression(paste("S"[s], " (ppm)")), 
+     cex.lab=1.5, xlim=c(0, max(compr$S.x)), ylim= c(0, max(compr$S.x)), iitar)
+abline(0,1)
+plot(Fe.y~Fe.x, cex=1.2, xlab=expression(paste("Fe"[r], " (ppm)")), ylab=expression(paste("Fe"[s], " (ppm)")), 
+     cex.lab=1.5, xlim=c(0, max(compr$Fe.x)), ylim= c(0, max(compr$Fe.x)), iitar)
 abline(0,1)
