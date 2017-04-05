@@ -18,7 +18,7 @@ unzip("OCP_M3_data.zip", overwrite=T)
 cbook <- read.table("SSID.csv", header=T, sep=",")  ## read lab soil ID codebook
 iita1 <- read.table("iita1.csv", header=T, sep=",") ## IITA M3 initial data in mg/kg
 iita2 <- read.table("iita2.csv", header=T, sep=",") ## IITA M3 rerun data in mg/kg
-cnlsr <- read.table("cnls.csv", header=T, sep=",")  ## CNLS ICP-MS M3 reference data
+cnlsr <- read.table("cnls.csv", header=T, sep=",")  ## CNLS ICP-OES M3 reference data
 cnlsr <- merge(cbook, cnlsr, by="SSN")
 
 # Assemble dataframes
