@@ -19,7 +19,7 @@ loc <- as.matrix(req[,3:4])
 sid <- leaderCluster(loc, radius=12000, distance="L2")$cluster_id
 req <- cbind(req, sid)
 
-# Nutrient sufficiency levels (in ppm)
+# Set nutrient sufficiency levels (in ppm)
 rN <- 700 
 rP <- 30
 rK <- 190
