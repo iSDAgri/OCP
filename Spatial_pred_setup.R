@@ -14,22 +14,22 @@ dir.create("GRID_data", showWarnings=F)
 setwd("./GRID_data")
 
 # Download GeoSurvey data
-download("https://www.dropbox.com/s/6gr2s8s7zgj7hr7/GS_CNG_2016.csv.zip?dl=0", "GS_CNG_2016.csv.zip", mode="wb")
+download("https://www.dropbox.com/s/6gr2s8s7zgj7hr7/GS_CNG_2016.csv.zip?raw=1", "GS_CNG_2016.csv.zip", mode="wb")
 unzip("GS_CNG_2016.csv.zip", overwrite=T)
 geo <- read.table("GS_CNG_2016.csv", header=T, sep=",")
 
 # Download MobileSurvey data
-download("https://www.dropbox.com/s/lbzcnzrqbuiyh8r/MS_CNG_2016.csv.zip?dl=0", "MS_CNG_2016.csv.zip", mode="wb")
+download("https://www.dropbox.com/s/lbzcnzrqbuiyh8r/MS_CNG_2016.csv.zip?raw=1", "MS_CNG_2016.csv.zip", mode="wb")
 unzip("MS_CNG_2016.csv.zip", overwrite=T)
 mob <- read.table("MS_CNG_2016.csv", header=T, sep=",")
 
 # Download MIR prediction data
-download("https://www.dropbox.com/s/x2or21x624n75gu/Top_MIR_pred.csv.zip?dl=0", "Top_MIR_pred.csv.zip", mode="wb")
+download("https://www.dropbox.com/s/x2or21x624n75gu/Top_MIR_pred.csv.zip?raw=1", "Top_MIR_pred.csv.zip", mode="wb")
 unzip("Top_MIR_pred.csv.zip", overwrite=T)
 mir <- read.table("Top_MIR_pred.csv", header=T, sep=",")
 
 # Download grids
-download("https://www.dropbox.com/s/vewvi0l1o949yh2/OCP_grids.zip?dl=0", "OCP_grids.zip", mode="wb")
+download("https://www.dropbox.com/s/vewvi0l1o949yh2/OCP_grids.zip?raw=1", "OCP_grids.zip", mode="wb")
 unzip("OCP_grids.zip", overwrite=T)
 download("https://www.dropbox.com/s/03sl7rnfpdb2d1o/LGA_ID.zip?dl=0", "LGA_ID.zip", mode="wb")
 unzip("LGA_ID.zip", overwrite=T)
@@ -66,11 +66,11 @@ coordinates(nut) <- ~x+y
 projection(nut) <- projection(grids)
 nutgrd <- extract(grids, nut)
 nutgrd <- as.data.frame(nutgrd)
-nut <- cbind(nut, nutgrd)
+nut <- cbind.data.frame(nut, nutgrd)
 nut <- unique(na.omit(nut)) ## includes only unique & complete records
 
 # extract variables for nutrient requirement summaries
-reqvars <- c("ssid","x","y","LGA_ID","P","K","S","B","Zn","BD20")
+reqvars <- c("ssid","x","y","LGA_ID","N","P","K","S","B","Zn","BD20")
 req <- nut[reqvars]
 
 # Write files -------------------------------------------------------------
