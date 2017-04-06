@@ -1,4 +1,4 @@
-#' Soil nutrient map predictions from soil MIR and gridded data
+#' Soil nutrient predictions from soil MIR and gridded data
 #' M. Walsh, December 2016
 
 # Required packages
@@ -11,7 +11,6 @@ suppressPackageStartupMessages({
   require(raster)
   require(randomForest)
   require(gbm)
-  require(deepnet)
   require(glmnet)
 })
 
@@ -41,30 +40,7 @@ nut$dZn <- 2*nut$BD20*nut$Zn-2*nut$BD20*rZn
 
 # Variable setup
 l <- nut$dP ## set labels (y-variable) here
-f <- nut[,11:50] ## set features (x-varibales) here
-
-# bartMachine model -------------------------------------------------------
-options(java.parameters = "-Xmx8g")
-library(bartMachine)
-
-# Start doParallel to parallelize model fitting
-mc <- makeCluster(detectCores())
-registerDoParallel(mc)
-
-# Model setup
-set.seed(1385321)
-tc <- trainControl(method = "cv", allowParallel = T)
-bar <- train(f, l,
-             method = "bartMachine", 
-             preProc = c("center", "scale"), 
-             trControl = tc,
-             tuneLength = 2,
-             verbose = FALSE,
-             seed = 1)
-print(bar)
-bar_pred <- predict(grids, bar)
-rm("bar")
-stopCluster(mc)
+f <- nut[,11:50] ## set features (x-variables) here
 
 # RF model ----------------------------------------------------------------
 # Start doParallel to parallelize model fitting
@@ -129,6 +105,29 @@ net <- train(f, l,
 print(net)
 net_pred <- predict(grids, net) ## predict map
 rm("net")
+stopCluster(mc)
+
+# bartMachine model -------------------------------------------------------
+options(java.parameters = "-Xmx8g")
+library(bartMachine)
+
+# Start doParallel to parallelize model fitting
+mc <- makeCluster(detectCores())
+registerDoParallel(mc)
+
+# Model setup
+set.seed(1385321)
+tc <- trainControl(method = "cv", allowParallel = T)
+bar <- train(f, l,
+             method = "bartMachine", 
+             preProc = c("center", "scale"), 
+             trControl = tc,
+             tuneLength = 2,
+             verbose = FALSE,
+             seed = 1)
+print(bar)
+bar_pred <- predict(grids, bar)
+rm("bar")
 stopCluster(mc)
 
 # Model stacking setup ----------------------------------------------------
