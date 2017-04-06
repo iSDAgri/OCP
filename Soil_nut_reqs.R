@@ -2,7 +2,7 @@
 #' M. Walsh, December 2016
 
 # Required packages
-# install.packages(c("devtools","leaderCluster","MASS","arm")), dependencies=TRUE)
+# install.packages(c("devtools","leaderCluster","arm")), dependencies=TRUE)
 suppressPackageStartupMessages({
   require(devtools)
   require(leaderCluster)
@@ -19,8 +19,8 @@ loc <- as.matrix(req[,3:4])
 sid <- leaderCluster(loc, radius=12000, distance="L2")$cluster_id
 req <- cbind(req, sid)
 
-# Nutrient sufficiency reference levels (in ppm)
-rN <- 1500
+# Nutrient sufficiency levels (in ppm)
+rN <- 700 
 rP <- 30
 rK <- 190
 rS <- 20
@@ -53,13 +53,13 @@ dK <- lmer(dK~1+(1|sid), data=req)
 display(dK)
 
 # delta S (kg/ha) relative to specified reference level
-dS <- lmer(dS~1+(1|LGA_name), data=req)
+dS <- lmer(dS~1+(1|sid), data=req)
 display(dS)
 
 # delta B (kg/ha) relative to specified reference level
-dB <- lmer(dB~1+(1|LGA_name), data=req)
+dB <- lmer(dB~1+(1|sid), data=req)
 display(dB)
 
 # delta Zn (kg/ha) relative to specified reference level
-dZn <- lmer(dZn~1+(1|LGA_name), data=req)
+dZn <- lmer(dZn~1+(1|sid), data=req)
 display(dZn)
