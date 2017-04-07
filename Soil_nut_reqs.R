@@ -19,22 +19,22 @@ loc <- as.matrix(req[,3:4])
 sid <- leaderCluster(loc, radius=12000, distance="L2")$cluster_id
 req <- cbind(req, sid)
 
-# Set nutrient sufficiency levels (in ppm)
-rN <- 700 
-rP <- 30
-rK <- 190
-rS <- 20
-rB <- 0.8
-rZn <- 1.5
-
 # Oxide equivalents
 oP <- 2.2913 ## P to P2O5
 oK <- 1.2046 ## K to K2O
 
+# Set nutrient sufficiency levels (in ppm)
+rN <- 700 
+rP <- 30
+rK <- 120
+rS <- 20
+rB <- 0.8
+rZn <- 1.5
+
 # Nutrient mass estimates (kg/ha) in delta notation relative to specified reference levels
 req$dN <- 2*req$BD20*req$N*10000-2*req$BD20*rN ## convert from % to ppm
-req$dP <- 2*req$BD20*req$P*oP-2*req$BD20*rP ## in P2O5 oxide equivalents
-req$dK <- 2*req$BD20*req$K*oK-2*req$BD20*rK ## in K2O oxide equivalents
+req$dP <- 2*req$BD20*req$P*oP-2*req$BD20*rP*oP ## in P2O5 oxide equivalents
+req$dK <- 2*req$BD20*req$K*oK-2*req$BD20*rK*oK ## in K2O oxide equivalents
 req$dS <- 2*req$BD20*req$S-2*req$BD20*rS
 req$dB <- 2*req$BD20*req$B-2*req$BD20*rB
 req$dZn <- 2*req$BD20*req$Zn-2*req$BD20*rZn
