@@ -24,12 +24,12 @@ oP <- 2.2913 ## P to P2O5
 oK <- 1.2046 ## K to K2O
 
 # Set nutrient sufficiency levels (in ppm)
-rN <- 700 
-rP <- 30
-rK <- 120
+rN <- 1000 
+rP <- 15
+rK <- 90
 rS <- 20
-rB <- 0.8
-rZn <- 1.5
+rB <- 1.7
+rZn <- 1
 
 # Nutrient mass estimates (kg/ha) in delta notation relative to specified reference levels
 req$dN <- 2*req$BD20*req$N*10000-2*req$BD20*rN ## convert from % to ppm
