@@ -25,7 +25,7 @@ oK <- 1.2046 ## K to K2O
 
 # Set nutrient sufficiency levels (in ppm)
 rN <- 1000 
-rP <- 15
+rP <- 20
 rK <- 90
 rS <- 20
 rB <- 1.7
