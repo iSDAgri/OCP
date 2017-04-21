@@ -31,7 +31,7 @@ mir <- read.table("Top_MIR_pred.csv", header=T, sep=",")
 # Download grids
 download("https://www.dropbox.com/s/vewvi0l1o949yh2/OCP_grids.zip?raw=1", "OCP_grids.zip", mode="wb")
 unzip("OCP_grids.zip", overwrite=T)
-download("https://www.dropbox.com/s/03sl7rnfpdb2d1o/LGA_ID.zip?dl=0", "LGA_ID.zip", mode="wb")
+download("https://www.dropbox.com/s/03sl7rnfpdb2d1o/LGA_ID.zip?raw=1", "LGA_ID.zip", mode="wb")
 unzip("LGA_ID.zip", overwrite=T)
 glist <- list.files(pattern="tif", full.names=T)
 grids <- stack(glist)
